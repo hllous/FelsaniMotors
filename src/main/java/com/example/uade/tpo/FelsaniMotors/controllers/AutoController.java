@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.controller;
+package com.example.uade.tpo.FelsaniMotors.controllers;
 
 import java.net.URI;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.service;
+package com.example.uade.tpo.FelsaniMotors;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
