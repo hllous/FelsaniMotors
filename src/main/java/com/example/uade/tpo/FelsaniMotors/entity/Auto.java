@@ -1,10 +1,13 @@
 package com.example.uade.tpo.FelsaniMotors.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -46,8 +49,7 @@ public class Auto {
     @Column
     private String Categoria;
 
-    /* hay que sacar el comentario, y modificar si hay otro nombre de la clase Publicacion
     @OneToMany(mappedBy = "auto")
     private List<Publicacion> publicaciones;
-    */
+    
 }

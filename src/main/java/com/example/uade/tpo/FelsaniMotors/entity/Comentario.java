@@ -27,11 +27,11 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComentario;
 
-    /*  N:1 con Publicacion
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_publicacion", nullable = false)
     private Publicacion publicacion;
-
+/*
     // N:1 con Usuario (autor)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
