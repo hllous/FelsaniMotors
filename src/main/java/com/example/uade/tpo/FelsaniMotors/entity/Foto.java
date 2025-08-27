@@ -3,10 +3,10 @@ package com.example.uade.tpo.FelsaniMotors.entity;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-
+//a
 @Entity
 @Data
-@Table(name = "fotos")
+@Table(name = "fotos") 
 public class Foto {
 
     @Id
