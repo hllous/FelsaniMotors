@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.entity.dto;
+package com.example.uade.tpo.FelsaniMotors.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,10 +9,15 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PublicacionDTO {
-    private Long id;
+public class PublicacionResponse {
+    // Datos básicos de la publicación
+    private Long idPublicacion;
+    
+    // IDs para referencias a otras entidades
     private Long idUsuario;
     private Long idAuto;
+    
+    // Datos básicos de la publicación
     private String titulo;
     private String descripcion;
     private String ubicacion;
@@ -21,10 +26,10 @@ public class PublicacionDTO {
     private char estado;
     private String metodoDePago;
     
-    // Artributos adicionales para mostrar
+    // Datos adicionales para mostrar en la UI
     private String nombreUsuario;
     private String marcaAuto;
     private String modeloAuto;
     private String imagenPrincipal;
-
+    private Long idFotoPrincipal;
 }

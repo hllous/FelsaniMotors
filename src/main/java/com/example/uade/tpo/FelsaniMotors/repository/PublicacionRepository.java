@@ -1,6 +1,8 @@
 package com.example.uade.tpo.FelsaniMotors.repository;
 
+
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
+import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,9 +21,11 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
     List<Publicacion> findByIdUsuario(Long idUsuario);
     
     /**
-     * Encuentra publicaciones por el ID del auto
+     * Encuentra publicaciones por el usuario
      */
-    List<Publicacion> findByIdAuto(Long idAuto);
+    List<Publicacion> findByUsuario(Usuario usuario);
+    
+
     
     /**
      * Busca publicaciones por título, ubicación o descripción

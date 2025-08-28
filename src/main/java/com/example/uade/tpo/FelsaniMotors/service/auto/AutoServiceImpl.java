@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
@@ -51,10 +50,5 @@ public class AutoServiceImpl implements AutoService {
         auto.setCategoria(autoRequest.getCategoria());
 
         return autoRepository.save(auto);
-    }
-
-    @Override
-    public Page<Auto> getAutos(Pageable pageable) {
-        throw new UnsupportedOperationException("Unimplemented method 'getAutos'");
     }
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,18 +31,22 @@ public class AutoController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 
-        Pageable pageable = (page == null || size == null)
-                ? Pageable.unpaged()
-                : PageRequest.of(page, size);
+        PageRequest pageRequest;
+        if (page == null || size == null) {
+            // Si no se proporcionan parámetros de paginación, usamos valores predeterminados
+            pageRequest = PageRequest.of(0, Integer.MAX_VALUE);
+        } else {
+            pageRequest = PageRequest.of(page, size);
+        }
 
-        Page<Auto> result = autoService.getAutos(pageable);
+        Page<Auto> result = autoService.getAutos(pageRequest);
         return ResponseEntity.ok(result);
     }
 
-    // GET /autos/{autoId}
-    @GetMapping("/{autoId}")
-    public ResponseEntity<Auto> getAutoById(@PathVariable Long autoId) {
-        Optional<Auto> result = autoService.getAutoById(autoId);
+    // GET /autos/{idAuto}
+    @GetMapping("/{idAuto}")
+    public ResponseEntity<Auto> getAutoByIdAuto(@PathVariable Long idAuto) {
+        Optional<Auto> result = autoService.getAutoById(idAuto);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

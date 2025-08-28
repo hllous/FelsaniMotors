@@ -1,7 +1,11 @@
 package com.example.uade.tpo.FelsaniMotors.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -37,4 +41,9 @@ public class Usuario {
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha_registro")
     private Date fechaRegistro = new Date();
+    
+    // Relación con las publicaciones del usuario
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<Publicacion> publicaciones = new ArrayList<>();
 }

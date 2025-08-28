@@ -40,9 +40,9 @@ public class UsuariosController {
         return ResponseEntity.ok(usuarioService.getUsuarios(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/{usuarioId}")
-    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long usuarioId) {
-        Optional<Usuario> result = usuarioService.getUsuarioById(usuarioId);
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<Usuario> getUsuarioByIdUsuario(@PathVariable Long idUsuario) {
+        Optional<Usuario> result = usuarioService.getUsuarioById(idUsuario);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.noContent().build());
     }
 
@@ -53,11 +53,11 @@ public class UsuariosController {
         return ResponseEntity.created(URI.create("/usuarios/" + result.getId())).body(result);
     }
 
-    @PostMapping(value = "/{usuarioId}/foto-perfil", consumes = "multipart/form-data")
+    @PostMapping(value = "/{idUsuario}/foto-perfil", consumes = "multipart/form-data")
     public ResponseEntity<Usuario> subirFotoPerfil(
-            @PathVariable Long usuarioId,
+            @PathVariable Long idUsuario,
             @RequestPart("file") MultipartFile file) throws Exception {
-        Usuario result = usuarioService.setFotoPerfil(usuarioId, file);
+        Usuario result = usuarioService.setFotoPerfil(idUsuario, file);
         return ResponseEntity.ok(result);
     }
 }

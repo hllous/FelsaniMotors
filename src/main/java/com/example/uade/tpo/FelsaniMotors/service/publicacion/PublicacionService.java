@@ -1,7 +1,10 @@
 package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
+import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionCreateRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionUpdateRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
+
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
-import com.example.uade.tpo.FelsaniMotors.entity.dto.PublicacionDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,56 +18,51 @@ public interface PublicacionService {
     /**
      * Obtiene todas las publicaciones paginadas
      */
-    Page<PublicacionDTO> getAllPublicaciones(Pageable pageable);
+    Page<PublicacionResponse> getAllPublicaciones(Pageable pageable);
     
     /**
      * Busca una publicación por su ID
      */
-    Optional<PublicacionDTO> getPublicacionById(Long id);
+    Optional<PublicacionResponse> getPublicacionById(Long id);
     
     /**
-     * Obtiene las publicaciones de un usuario específico
+     * Obtiene las publicaciones de un usuario específico (por ID)
      */
-    List<PublicacionDTO> getPublicacionesByUsuario(Long idUsuario);
-    
-    /**
-     * Obtiene las publicaciones de un auto específico
-     */
-    List<PublicacionDTO> getPublicacionesByAuto(Long idAuto);
+    List<PublicacionResponse> getPublicacionesByIdUsuario(Long idUsuario);
     
     /**
      * Busca publicaciones por término de búsqueda
      */
-    Page<PublicacionDTO> buscarPublicaciones(String busqueda, Pageable pageable);
+    Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable);
     
     /**
      * Obtiene publicaciones por rango de precio
      */
-    List<PublicacionDTO> getPublicacionesByRangoPrecio(float precioMin, float precioMax);
+    List<PublicacionResponse> getPublicacionesByRangoPrecio(float precioMin, float precioMax);
     
     /**
      * Obtiene publicaciones por estado
      */
-    List<PublicacionDTO> getPublicacionesByEstado(char estado);
+    List<PublicacionResponse> getPublicacionesByEstado(char estado);
     
     // --- Seccion POST --- //
     
     /**
-     * Crea una nueva publicación a partir de un DTO
+     * Crea una nueva publicación a partir de un DTO de creacion
      */
-    PublicacionDTO createPublicacion(PublicacionDTO publicacionDTO);
+    PublicacionResponse createPublicacion(PublicacionCreateRequest createRequest);
     
     // --- Seccion PUT --- //
     
     /**
-     * Actualiza una publicación existente a partir de un DTO
+     * Actualiza una publicación existente a partir de un DTO de actualizacion
      */
-    PublicacionDTO updatePublicacion(Long id, PublicacionDTO publicacionDTO);
+    PublicacionResponse updatePublicacion(Long id, PublicacionUpdateRequest updateRequest);
     
     /**
      * Actualiza el estado de una publicación
      */
-    PublicacionDTO updateEstadoPublicacion(Long id, char estado);
+    PublicacionResponse updateEstadoPublicacion(Long id, char estado);
     
     /**
      * Elimina una publicación
@@ -74,12 +72,12 @@ public interface PublicacionService {
     // --- Métodos internos para trabajar con entidades --- //
     
     /**
-     * Convierte una Publicacion a PublicacionDTO
+     * Convierte una Publicacion a PublicacionResponse
      */
-    PublicacionDTO convertToDto(Publicacion publicacion);
+    PublicacionResponse convertToDto(Publicacion publicacion);
     
     /**
-     * Convierte un PublicacionDTO a Publicacion
+     * Convierte un DTO de creacion a Publicacion
      */
-    Publicacion convertToEntity(PublicacionDTO dto);
+    Publicacion convertToEntity(PublicacionCreateRequest createRequest);
 }
