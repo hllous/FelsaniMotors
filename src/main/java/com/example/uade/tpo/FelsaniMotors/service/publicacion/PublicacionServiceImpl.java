@@ -69,6 +69,7 @@ public class PublicacionServiceImpl implements PublicacionService {
         return publicacionesResponse;
     }
 
+    // Utilizado en searchPublicaciones
     @Override
     public Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable) {
         Page<Publicacion> publicaciones = publicacionRepository.buscarPublicaciones(busqueda, pageable);
@@ -105,7 +106,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     public PublicacionResponse createPublicacion(PublicacionCreateRequest createRequest) {
         Publicacion publicacion = convertToEntity(createRequest);
         
-        // Si es una nueva publicación, asigno la fecha actual
+        // Si es una nueva publicacion, asigno la fecha actual
         if (publicacion.getFechaPublicacion() == null) {
             publicacion.setFechaPublicacion(new Date());
         }
@@ -113,14 +114,13 @@ public class PublicacionServiceImpl implements PublicacionService {
         // Por defecto, establecemos el estado en 'A' (Activo)
         publicacion.setEstado('A');
         
-        // Primero guardamos la publicación
+        // Primero guardamos la publicacion
         Publicacion savedPublicacion = publicacionRepository.save(publicacion);
         
-        // Si hay información de foto en la solicitud, creamos y guardamos la foto
+        // Si hay informacion de foto en la solicitud, creamos y guardamos la foto
         if (createRequest.getUrlImagen() != null && !createRequest.getUrlImagen().isEmpty()) {
             Foto foto = new Foto();
             foto.setPublicacion(savedPublicacion);
-            foto.setUrlImagen(createRequest.getUrlImagen());
             
             // Si no se especifica, establecemos como principal
             foto.setEsPrincipal(createRequest.getEsPrincipal() != null ? createRequest.getEsPrincipal() : true);
@@ -137,11 +137,16 @@ public class PublicacionServiceImpl implements PublicacionService {
     // --- Seccion PUT --- //
     
     @Override
-    public PublicacionResponse updatePublicacion(Long id, PublicacionUpdateRequest updateRequest) {
-        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(id);
+    public PublicacionResponse updatePublicacion(Long idPublicacion, PublicacionUpdateRequest updateRequest, Long idUsuario) {
+        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
         if (publicacionOpt.isPresent()) {
             Publicacion publicacion = publicacionOpt.get();
+            
+            // Verificar si el usuario es el propietario de la publicacion
+            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+                throw new RuntimeException("No tienes permiso para actualizar esta publicacion");
+            }
             
             // Actualizar los campos desde el DTO
             publicacion.setTitulo(updateRequest.getTitulo());
@@ -153,36 +158,51 @@ public class PublicacionServiceImpl implements PublicacionService {
             Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
             return convertToDto(updatedPublicacion);
         } else {
-            throw new RuntimeException("Publicación no encontrada con ID: " + id);
+            throw new RuntimeException("Publicacion no encontrada con ID: " + idPublicacion);
         }
     }
 
     @Override
-    public PublicacionResponse updateEstadoPublicacion(Long id, char estado) {
-        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(id);
+    public PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario) {
+        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
         if (publicacionOpt.isPresent()) {
             Publicacion publicacion = publicacionOpt.get();
+            
+            // Verificar si el usuario es el propietario de la publicacion
+            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+                throw new RuntimeException("No tienes permiso para actualizar el estado de esta publicacion");
+            }
+            
             publicacion.setEstado(estado);
             Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
             return convertToDto(updatedPublicacion);
         } else {
-            throw new RuntimeException("Publicación no encontrada con ID: " + id);
+            throw new RuntimeException("Publicacion no encontrada con ID: " + idPublicacion);
         }
     }
 
     // --- Seccion DELETE --- //
     
     @Override
-    public boolean deletePublicacion(Long id) {
-        if (publicacionRepository.existsById(id)) {
-            publicacionRepository.deleteById(id);
+    public boolean deletePublicacion(Long idPublicacion, Long idUsuario) {
+        Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
+        
+        if (publicacionOpt.isPresent()) {
+            Publicacion publicacion = publicacionOpt.get();
+            
+            // Verificar si el usuario es el propietario de la publicacion
+            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+                throw new RuntimeException("No tienes permiso para eliminar esta publicacion");
+            }
+            
+            publicacionRepository.deleteById(idPublicacion);
             return true;
         }
         return false;
     }
     
-    // --- Métodos de conversión --- //
+    // --- Metodos de conversion --- //
     
     @Override
     public PublicacionResponse convertToDto(Publicacion publicacion) {
@@ -201,7 +221,7 @@ public class PublicacionServiceImpl implements PublicacionService {
             dto.setModeloAuto(publicacion.getAuto().getModelo());
         }
         
-        // Propiedades básicas
+        // Propiedades basicas
         dto.setTitulo(publicacion.getTitulo());
         dto.setDescripcion(publicacion.getDescripcion());
         dto.setUbicacion(publicacion.getUbicacion());
@@ -210,11 +230,12 @@ public class PublicacionServiceImpl implements PublicacionService {
         dto.setEstado(publicacion.getEstado());
         dto.setMetodoDePago(publicacion.getMetodoDePago());
         
-        // Buscar y establecer la información de la foto principal
+        // Buscar y establecer la informacion de la foto principal
         Optional<Foto> fotoPrincipal = fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true);
         if (fotoPrincipal.isPresent()) {
-            dto.setIdFotoPrincipal(fotoPrincipal.get().getId());
-            dto.setImagenPrincipal(fotoPrincipal.get().getUrlImagen());
+            dto.setIdFotoPrincipal(fotoPrincipal.get().getIdFoto());
+            // Ahora generamos una URL para acceder a la imagen
+            dto.setImagenPrincipal("/publicaciones/" + publicacion.getIdPublicacion() + "/fotos/" + fotoPrincipal.get().getIdFoto() + "/imagen");
         }
         
         return dto;
@@ -233,7 +254,7 @@ public class PublicacionServiceImpl implements PublicacionService {
                 throw new RuntimeException("Usuario no encontrado con ID: " + createRequest.getIdUsuario());
             }
         } else {
-            throw new RuntimeException("Se requiere un ID de usuario para crear una publicación");
+            throw new RuntimeException("Se requiere un ID de usuario para crear una publicacion");
         }
         
         if (createRequest.getIdAuto() != null) {
@@ -244,10 +265,10 @@ public class PublicacionServiceImpl implements PublicacionService {
                 throw new RuntimeException("Auto no encontrado con ID: " + createRequest.getIdAuto());
             }
         } else {
-            throw new RuntimeException("Se requiere un ID de auto para crear una publicación");
+            throw new RuntimeException("Se requiere un ID de auto para crear una publicacion");
         }
         
-        // Propiedades básicas
+        // Propiedades basicas
         publicacion.setTitulo(createRequest.getTitulo());
         publicacion.setDescripcion(createRequest.getDescripcion());
         publicacion.setUbicacion(createRequest.getUbicacion());

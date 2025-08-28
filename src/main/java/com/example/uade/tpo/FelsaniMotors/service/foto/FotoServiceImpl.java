@@ -1,0 +1,111 @@
+package com.example.uade.tpo.FelsaniMotors.service.foto;
+
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.example.uade.tpo.FelsaniMotors.entity.Foto;
+import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
+import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
+import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
+@Service
+public class FotoServiceImpl implements FotoService {
+
+    @Autowired
+    private FotoRepository fotoRepository;
+    
+    @Autowired
+    private PublicacionRepository publicacionRepository;
+
+    @Override
+    public Page<Foto> getFotosByPublicacion(Long idPublicacion, Pageable pageable) {
+        return fotoRepository.findByIdPublicacion(idPublicacion, pageable);
+    }
+
+    @Override
+    public Foto getFotoById(Long idFoto) {
+        return fotoRepository.findById(idFoto)
+            .orElseThrow(() -> new EntityNotFoundException("Foto no encontrada con ID: " + idFoto));
+    }
+    
+    @Override
+    public byte[] getFotoData(Long idFoto) {
+        Foto foto = this.getFotoById(idFoto);
+        return foto.getDatos();
+    }
+
+    @Override
+    public Foto addFoto(Long idPublicacion, MultipartFile archivo, Boolean esPrincipal, Integer orden) throws IOException {
+        // Verificar que la publicación existe
+        Publicacion publicacion = publicacionRepository.findById(idPublicacion).get();
+        
+        Foto foto = new Foto();
+        foto.setPublicacion(publicacion);
+        
+        // Almacenar los datos de la imagen directamente en la base de datos
+        foto.setDatos(archivo.getBytes());
+        
+        // Si es principal, establecer como principal y desmarcar otras fotos principales
+        if (esPrincipal != null && esPrincipal) {
+            // Desmarcar otras fotos principales de la misma publicación
+            fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true)
+                .ifPresent(fotoPrincipal -> {
+                    fotoPrincipal.setEsPrincipal(false);
+                    fotoRepository.save(fotoPrincipal);
+                });
+            
+            foto.setEsPrincipal(true);
+        } else {
+            foto.setEsPrincipal(false);
+        }
+        
+        // Si tiene orden, establecer orden
+        if (orden != null) {
+            foto.setOrden(orden);
+        }
+        
+        return fotoRepository.save(foto);
+    }
+
+    @Override
+    public void deleteFoto(Long idFoto) {
+        fotoRepository.deleteById(idFoto);
+    }
+    
+    @Override
+    public Foto setMainFoto(Long fotoId) {
+        Foto foto = this.getFotoById(fotoId);
+        Publicacion publicacion = foto.getPublicacion();
+        
+        // Desmarcar otras fotos principales de la misma publicación
+        fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true)
+            .ifPresent(fotoPrincipal -> {
+                fotoPrincipal.setEsPrincipal(false);
+                fotoRepository.save(fotoPrincipal);
+            });
+        
+        // Marcar esta foto como principal
+        foto.setEsPrincipal(true);
+        return fotoRepository.save(foto);
+    }
+    
+    @Override
+    public Foto getMainFoto(Publicacion publicacion) {
+        return fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true)
+            .orElse(null);
+    }
+    
+    @Override
+    public Foto updateFotoOrder(Long idFoto, Integer orden) {
+        Foto foto = this.getFotoById(idFoto);
+        foto.setOrden(orden);
+        return fotoRepository.save(foto);
+    }
+}

@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicateException;
@@ -51,14 +49,6 @@ public class UsuariosController {
             throws UsuarioDuplicateException {
         Usuario result = usuarioService.createUsuario(usuario);
         return ResponseEntity.created(URI.create("/usuarios/" + result.getId())).body(result);
-    }
-
-    @PostMapping(value = "/{idUsuario}/foto-perfil", consumes = "multipart/form-data")
-    public ResponseEntity<Usuario> subirFotoPerfil(
-            @PathVariable Long idUsuario,
-            @RequestPart("file") MultipartFile file) throws Exception {
-        Usuario result = usuarioService.setFotoPerfil(idUsuario, file);
-        return ResponseEntity.ok(result);
     }
 }
 

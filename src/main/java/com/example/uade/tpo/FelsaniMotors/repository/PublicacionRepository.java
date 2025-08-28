@@ -18,15 +18,9 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
     /**
      * Encuentra publicaciones por el ID del usuario
      */
-    List<Publicacion> findByIdUsuario(Long idUsuario);
-    
-    /**
-     * Encuentra publicaciones por el usuario
-     */
-    List<Publicacion> findByUsuario(Usuario usuario);
-    
+    @Query("SELECT p FROM Publicacion p WHERE p.usuario.id = :idUsuario")
+    List<Publicacion> findByIdUsuario(@Param("idUsuario") Long idUsuario);
 
-    
     /**
      * Busca publicaciones por título, ubicación o descripción
      */
@@ -45,11 +39,6 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
      * Encuentra publicaciones activas (por estado)
      */
     List<Publicacion> findByEstado(char estado);
-    
-    /**
-     * Encuentra publicaciones por método de pago
-     */
-    List<Publicacion> findByMetodoDePago(String metodoDePago);
     
     /**
      * Obtiene todas las publicaciones paginadas y ordenadas por fecha de publicación descendente

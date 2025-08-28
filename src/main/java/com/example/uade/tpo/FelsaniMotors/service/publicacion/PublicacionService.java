@@ -15,69 +15,47 @@ public interface PublicacionService {
     
     // --- Seccion GET --- //
     
-    /**
-     * Obtiene todas las publicaciones paginadas
-     */
+    // Obtiene todas las publicaciones paginadas
     Page<PublicacionResponse> getAllPublicaciones(Pageable pageable);
     
-    /**
-     * Busca una publicación por su ID
-     */
+    // Busca una publicacion por su ID
     Optional<PublicacionResponse> getPublicacionById(Long id);
     
-    /**
-     * Obtiene las publicaciones de un usuario específico (por ID)
-     */
+    // Obtiene publicaciones de un usuario especifico
     List<PublicacionResponse> getPublicacionesByIdUsuario(Long idUsuario);
     
-    /**
-     * Busca publicaciones por término de búsqueda
-     */
+    // Busca publicaciones por termino de busqueda
     Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable);
     
-    /**
-     * Obtiene publicaciones por rango de precio
-     */
+    // Obtiene publicaciones por rango de precio
     List<PublicacionResponse> getPublicacionesByRangoPrecio(float precioMin, float precioMax);
     
-    /**
-     * Obtiene publicaciones por estado
-     */
+    // Obtiene publicaciones por estado
     List<PublicacionResponse> getPublicacionesByEstado(char estado);
     
     // --- Seccion POST --- //
     
-    /**
-     * Crea una nueva publicación a partir de un DTO de creacion
-     */
+    // Crea una nueva publicacion
     PublicacionResponse createPublicacion(PublicacionCreateRequest createRequest);
     
     // --- Seccion PUT --- //
     
-    /**
-     * Actualiza una publicación existente a partir de un DTO de actualizacion
-     */
-    PublicacionResponse updatePublicacion(Long id, PublicacionUpdateRequest updateRequest);
+    //Actualiza una publicacion existente
+    PublicacionResponse updatePublicacion(Long idPublicacion, PublicacionUpdateRequest updateRequest, Long idUsuario);
     
-    /**
-     * Actualiza el estado de una publicación
-     */
-    PublicacionResponse updateEstadoPublicacion(Long id, char estado);
+    // Actualiza el estado de una publicacion
+    PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario);
+
+    // --- Seccion DELETE --- //
     
-    /**
-     * Elimina una publicación
-     */
-    boolean deletePublicacion(Long id);
+    // Elimina una publicacion
+    boolean deletePublicacion(Long idPublicacion, Long idUsuario);
     
-    // --- Métodos internos para trabajar con entidades --- //
+    // --- Metodos de conversion --- //
     
-    /**
-     * Convierte una Publicacion a PublicacionResponse
-     */
+    /* Convierte entidad a DTO */
     PublicacionResponse convertToDto(Publicacion publicacion);
     
-    /**
-     * Convierte un DTO de creacion a Publicacion
-     */
+    /* Convierte DTO a entidad */
     Publicacion convertToEntity(PublicacionCreateRequest createRequest);
 }

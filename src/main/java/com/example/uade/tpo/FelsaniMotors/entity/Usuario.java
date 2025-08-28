@@ -26,9 +26,6 @@ public class Usuario {
     @Column(name = "contrasena_hash", nullable = false)
     private String contrasena;     
 
-    @Column(name = "foto_perfil")
-    private String fotoPerfil;     
-
     private String nombre;
     private String apellido;
 
