@@ -3,7 +3,8 @@ package com.example.uade.tpo.FelsaniMotors.controllers;
 import com.example.uade.tpo.FelsaniMotors.entity.Categoria;
 import com.example.uade.tpo.FelsaniMotors.entity.dto.CategoriaRequest;
 import com.example.uade.tpo.FelsaniMotors.exceptions.CategoriaDuplicadaException;
-import com.example.uade.tpo.FelsaniMotors.service.CategoriaService;
+import com.example.uade.tpo.FelsaniMotors.service.categoria.CategoriaService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

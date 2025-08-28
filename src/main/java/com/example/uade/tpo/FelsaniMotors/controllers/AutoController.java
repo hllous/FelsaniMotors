@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.exceptions.AutoDuplicateException;
-import com.example.uade.tpo.FelsaniMotors.service.AutoService;
+import com.example.uade.tpo.FelsaniMotors.service.auto.AutoService;
 
 @RestController
 @RequestMapping("/autos")

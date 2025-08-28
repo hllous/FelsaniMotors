@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.service;
+package com.example.uade.tpo.FelsaniMotors.service.comentario;
 
 import java.util.Date;
 import java.util.List;

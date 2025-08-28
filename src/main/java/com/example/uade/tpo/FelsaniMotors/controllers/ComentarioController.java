@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
-import com.example.uade.tpo.FelsaniMotors.service.ComentarioService;
+import com.example.uade.tpo.FelsaniMotors.service.comentario.ComentarioService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;

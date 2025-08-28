@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.service;
+package com.example.uade.tpo.FelsaniMotors.service.usuario;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicateException;
 import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
+import com.example.uade.tpo.FelsaniMotors.service.AlmacenamientoService;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {

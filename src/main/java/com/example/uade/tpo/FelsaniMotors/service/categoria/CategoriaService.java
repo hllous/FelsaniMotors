@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.service;
+package com.example.uade.tpo.FelsaniMotors.service.categoria;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Categoria;
 import com.example.uade.tpo.FelsaniMotors.exceptions.CategoriaDuplicadaException;

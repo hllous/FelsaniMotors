@@ -19,14 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicateException;
-import com.example.uade.tpo.FelsaniMotors.service.UsuarioService;
+import com.example.uade.tpo.FelsaniMotors.service.usuario.UsuarioService;
 
 @RestController
 @RequestMapping("usuarios")
 public class UsuariosController {
 
     @Autowired
-    private UsuarioService usuarioService; //a
+    private UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<Page<Usuario>> getUsuarios(
