@@ -48,7 +48,6 @@ public class AutoServiceImpl implements AutoService {
         auto.setTipoCaja(autoRequest.getTipoCaja());
         auto.setMotor(autoRequest.getMotor());
         auto.setCategoria(autoRequest.getCategoria());
-
         return autoRepository.save(auto);
     }
 }

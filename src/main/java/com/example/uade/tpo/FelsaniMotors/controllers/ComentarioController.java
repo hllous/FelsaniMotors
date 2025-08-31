@@ -20,6 +20,26 @@ import com.example.uade.tpo.FelsaniMotors.service.comentario.ComentarioService;
 
 import jakarta.validation.constraints.NotBlank;
 
+/*
+     Metodos CRUD
+     GET:
+         - crearComentario: Crear un nuevo comentario en una publicacion.
+         - crearRespuesta: Crear una respuesta a un comentario existente.
+         - obtenerComentario: Obtener un comentario por su ID.
+         - listarComentariosPrincipales: Listar todos los comentarios principales de una publicacion.
+         - listarComentariosJerarquicamente: Listar todos los comentarios de una publicacion en orden jerarquico.
+         - listarRespuestas: Listar todas las respuestas a un comentario especifico.
+     PUT:
+         - actualizarTexto: Actualizar el texto de un comentario existente.
+     DELETE:
+         - eliminarComentario: Eliminar un comentario por su ID.
+
+*/
+
+
+
+
+
 @RestController
 @RequestMapping("/api/publicaciones/{idPublicacion}/comentarios")
 public class ComentarioController {
@@ -27,6 +47,7 @@ public class ComentarioController {
     @Autowired
     private ComentarioService comentarioService;
 
+    // ---Seccion GET--- //
     @PostMapping
     public ResponseEntity<Comentario> crearComentario(
             @PathVariable Long idPublicacion,
@@ -69,7 +90,7 @@ public class ComentarioController {
     public ResponseEntity<List<Comentario>> listarComentariosPrincipales(@PathVariable Long idPublicacion) {
         return ResponseEntity.ok(comentarioService.listarComentariosPrincipales(idPublicacion));
     }
-    
+
     @GetMapping("/jerarquicos")
     public ResponseEntity<List<Comentario>> listarComentariosJerarquicamente(@PathVariable Long idPublicacion) {
         return ResponseEntity.ok(comentarioService.listarComentariosOrdenados(idPublicacion));
@@ -82,6 +103,7 @@ public class ComentarioController {
         return ResponseEntity.ok(comentarioService.listarRespuestas(idComentario));
     }
 
+    //---Seccion PUT--- //
     @PutMapping("/{idComentario}/texto")
     public ResponseEntity<Comentario> actualizarTexto(
             @PathVariable Long idPublicacion,
@@ -91,6 +113,7 @@ public class ComentarioController {
         return ResponseEntity.ok(comentarioService.actualizarTexto(idComentario, request.getTexto()));
     }
 
+    //---Seccion DELETE--- //
     @DeleteMapping("/{idComentario}")
     public ResponseEntity<Void> eliminarComentario(
             @PathVariable Long idPublicacion,
@@ -102,7 +125,6 @@ public class ComentarioController {
     static class CreateComentarioRequest {
         @NotBlank
         private String texto;
-
         public String getTexto() { return texto; }
         public void setTexto(String texto) { this.texto = texto; }
     }
@@ -110,7 +132,6 @@ public class ComentarioController {
     static class UpdateTextoRequest {
         @NotBlank
         private String texto;
-
         public String getTexto() { return texto; }
         public void setTexto(String texto) { this.texto = texto; }
     }

@@ -9,7 +9,13 @@ import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.exceptions.AutoDuplicateException;
 
 public interface AutoService {
+
+    //Obtener una lista de autos.
     Page<Auto> getAutos(PageRequest pageRequest);
+
+    //Obtener un auto por su ID.
     Optional<Auto> getAutoById(Long autoId);
+
+    //Crear un nuevo auto.
     Auto createAuto(Auto autoRequest) throws AutoDuplicateException;
 }

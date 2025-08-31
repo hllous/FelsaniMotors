@@ -19,13 +19,24 @@ import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.exceptions.AutoDuplicateException;
 import com.example.uade.tpo.FelsaniMotors.service.auto.AutoService;
 
+/*
+    Metodos CRUD
+    GET:
+        - getAutos: Obtener una lista de autos.
+        - getAutoByIdAuto: Obtener un auto por su ID.
+    POST:
+        - createAuto: Crear un nuevo auto.
+ */
+
+
 @RestController
 @RequestMapping("/api/autos")
 public class AutoController {
 
     @Autowired
     private AutoService autoService;
-    // GET /autos
+
+    // ---Seccion GET--- //
     @GetMapping
     public ResponseEntity<Page<Auto>> getAutos(
             @RequestParam(required = false) Integer page,
@@ -33,7 +44,6 @@ public class AutoController {
 
         PageRequest pageRequest;
         if (page == null || size == null) {
-            // Si no se proporcionan parámetros de paginación, usamos valores predeterminados
             pageRequest = PageRequest.of(0, Integer.MAX_VALUE);
         } else {
             pageRequest = PageRequest.of(page, size);
@@ -42,15 +52,13 @@ public class AutoController {
         Page<Auto> result = autoService.getAutos(pageRequest);
         return ResponseEntity.ok(result);
     }
-
-    // GET /autos/{idAuto}
     @GetMapping("/{idAuto}")
     public ResponseEntity<Auto> getAutoByIdAuto(@PathVariable Long idAuto) {
         Optional<Auto> result = autoService.getAutoById(idAuto);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // POST /autos
+    // ---Seccion POST--- //
     @PostMapping
     public ResponseEntity<Auto> createAuto(@RequestBody Auto autoRequest)
             throws AutoDuplicateException {

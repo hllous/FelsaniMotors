@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 
 @Repository
+
+//Busca un auto por su marca y modelo
 public interface AutoRepository extends JpaRepository<Auto, Long> {
     Optional<Auto> findByMarcaAndModelo(String marca, String modelo);
 }
