@@ -19,14 +19,13 @@ public class Foto {
     @JsonIgnore                     
     private Publicacion publicacion;
     
-    // Datos binarios de la imagen
     @Lob
     @JsonIgnore
     private byte[] datos;
 
-    // Indica si esta es la foto principal de la publicación
+    
     private Boolean esPrincipal = false;
 
-    // Orden de la foto para mostrar en la UI
+    
     private Integer orden = 0;
 }

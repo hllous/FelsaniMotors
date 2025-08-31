@@ -22,6 +22,26 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.service.foto.FotoService;
 
+/* 
+Metodos CRUD:
+
+GET:
+getFotos: Devuelve las fotos de la publi usando findByIdPublicacion
+getFotosById: busca la foto por ID usando getFotoByID. Si existe devuelve 200 OK con la entidad Foto, sino un 404.
+getFotoImage: Devuelve los bytes de la imagen, si no existe devuelve un 404.
+
+POST:
+uploadFoto: Permite subir una nueva foto a una publicación. Lo guarda siempre como binario en la bd.
+
+DELETE:
+deleteFoto: Borra la foto por ID.
+
+PUT:
+setMainFoto: Marca esa foto como la principal de la publicación, desmarca la principal anterior (si existe).
+updateFotoOrder: Actualiza el orden de la foto en la publicación y devuelve la foto actualizada.
+
+*/
+
 @RestController
 @RequestMapping("/api/publicaciones")
 public class FotosController {
@@ -71,9 +91,8 @@ public class FotosController {
         }
     }
 
-    /**
-     * Elimina una foto
-     */
+    
+
     @DeleteMapping("/{idPublicacion}/fotos/{idFoto}")
     public ResponseEntity<Void> deleteFoto(
             @PathVariable Long idPublicacion,
@@ -81,8 +100,8 @@ public class FotosController {
         fotoService.deleteFoto(idFoto);
         return ResponseEntity.noContent().build();
     }
+
     
- 
     @GetMapping("/{idPublicacion}/fotos/{idFoto}/imagen")
     public ResponseEntity<byte[]> getFotoImage(
             @PathVariable Long idPublicacion,
@@ -92,7 +111,7 @@ public class FotosController {
             
             HttpHeaders headers = new HttpHeaders();
             
-            // Por defecto, asumimos que es una imagen JPEG
+            
             headers.setContentType(MediaType.IMAGE_JPEG);
             
             return new ResponseEntity<>(datos, headers, HttpStatus.OK);
@@ -101,9 +120,7 @@ public class FotosController {
         }
     }
     
-    /**
-     * Marca una foto como principal para una publicación
-     */
+    
     @PutMapping("/{idPublicacion}/fotos/{idFoto}/principal")
     public ResponseEntity<Foto> setMainFoto(
             @PathVariable Long idPublicacion,
@@ -115,10 +132,8 @@ public class FotosController {
             return ResponseEntity.notFound().build();
         }
     }
+
     
-    /**
-     * Actualiza el orden de una foto
-     */
     @PutMapping("/{idPublicacion}/fotos/{idFoto}/orden")
     public ResponseEntity<Foto> updateFotoOrder(
             @PathVariable Long idPublicacion,

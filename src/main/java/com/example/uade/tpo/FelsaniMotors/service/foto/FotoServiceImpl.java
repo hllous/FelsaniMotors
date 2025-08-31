@@ -15,6 +15,26 @@ import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+/*
+Metodos CRUD:
+
+GET:
+getFotosByPublicacion: Devuelve las fotos de la publicación en formato paginado.
+getFotoById: Devuelve la foto por ID, si no existe devuelve un 404.
+getFotoData: Devuelve los bytes de la imagen, si no existe devuelve un 404.
+getMainFoto: Devuelve la foto principal de la publicación.
+
+POST:
+addFoto: Crea una foto nueva en la publicación, si la marcás como principal desmarca la anterior.
+
+DELETE:
+deleteFoto: Borra la foto por ID, si sale bien devuelve 204 No Content.
+
+PUT:
+setMainFoto: Marca esa foto como principal y desmarca la anterior, si no existe devuelve un 404, si sale bien devuelve 200 OK.
+updateFotoOrder: Actualiza el orden de la foto y devuelve la foto actualizada, si no existe devuelve un 404, si sale bien devuelve 200 OK.
+*/
+
 @Service
 public class FotoServiceImpl implements FotoService {
 
@@ -43,18 +63,18 @@ public class FotoServiceImpl implements FotoService {
 
     @Override
     public Foto addFoto(Long idPublicacion, MultipartFile archivo, Boolean esPrincipal, Integer orden) throws IOException {
-        // Verificar que la publicación existe
+        
         Publicacion publicacion = publicacionRepository.findById(idPublicacion).get();
         
         Foto foto = new Foto();
         foto.setPublicacion(publicacion);
         
-        // Almacenar los datos de la imagen directamente en la base de datos
+        
         foto.setDatos(archivo.getBytes());
         
-        // Si es principal, establecer como principal y desmarcar otras fotos principales
+        
         if (esPrincipal != null && esPrincipal) {
-            // Desmarcar otras fotos principales de la misma publicación
+            
             fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true)
                 .ifPresent(fotoPrincipal -> {
                     fotoPrincipal.setEsPrincipal(false);
@@ -66,7 +86,7 @@ public class FotoServiceImpl implements FotoService {
             foto.setEsPrincipal(false);
         }
         
-        // Si tiene orden, establecer orden
+        
         if (orden != null) {
             foto.setOrden(orden);
         }
@@ -84,14 +104,14 @@ public class FotoServiceImpl implements FotoService {
         Foto foto = this.getFotoById(fotoId);
         Publicacion publicacion = foto.getPublicacion();
         
-        // Desmarcar otras fotos principales de la misma publicación
+        
         fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true)
             .ifPresent(fotoPrincipal -> {
                 fotoPrincipal.setEsPrincipal(false);
                 fotoRepository.save(fotoPrincipal);
             });
         
-        // Marcar esta foto como principal
+        
         foto.setEsPrincipal(true);
         return fotoRepository.save(foto);
     }

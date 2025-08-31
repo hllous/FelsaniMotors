@@ -18,6 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicateException;
 import com.example.uade.tpo.FelsaniMotors.service.usuario.UsuarioService;
+/* 
+GET:
+getUsuarios: Devuelve los usuarios en formato paginado, devuelve un 200 OK si existe al menos uno.
+getUsuarioByIdUsuario: Devuelve el usuario por ID, si no existe devuelve un 204 No Content.
+
+POST:
+createUsuario: Crea un usuario, si el email ya existe, tira UsuarioDuplicateException.
+*/
 
 @RestController
 @RequestMapping("/api/usuarios")
