@@ -19,7 +19,6 @@ public class ComentarioServiceImpl implements ComentarioService {
 
     @Autowired
     private ComentarioRepository comentarioRepository;
-    
     @Autowired
     private PublicacionRepository publicacionRepository;
 
@@ -31,27 +30,22 @@ public class ComentarioServiceImpl implements ComentarioService {
         if (comentario.getFecha() == null) {
             comentario.setFecha(new Date());
         }
-        
-        // Asignar la publicacion al comentario usando findById
         Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
         if (publicacion.isEmpty()) {
             throw new ComentarioInvalidoException("La publicación con ID " + idPublicacion + " no existe.");
         }
         comentario.setPublicacion(publicacion.get());
-        
         return comentarioRepository.save(comentario);
     }
 
     @Override
     public Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Comentario respuesta) {
 
-        // Asignar la publicación al comentario usando findById de forma simple
         Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
         if (publicacion.isEmpty()) {
             throw new ComentarioInvalidoException("La publicación con ID " + idPublicacion + " no existe.");
         }
 
-        // Buscar el comentario padre
         Optional<Comentario> padre = comentarioRepository.findById(idComentarioPadre);
         if (padre.isEmpty()) {
             throw new ComentarioNoEncontradoException(idComentarioPadre);
@@ -78,7 +72,7 @@ public class ComentarioServiceImpl implements ComentarioService {
         }
         return comentario.get();
     }
-    
+
     @Override
     public List<Comentario> listarComentariosPrincipales(Long idPublicacion) {
         return comentarioRepository.findComentariosPrincipalesByIdPublicacion(idPublicacion);
@@ -88,7 +82,7 @@ public class ComentarioServiceImpl implements ComentarioService {
     public List<Comentario> listarRespuestas(Long idComentarioPadre) {
         return comentarioRepository.findRespuestasByPadreId(idComentarioPadre);
     }
-    
+
     @Override
     public List<Comentario> listarComentariosOrdenados(Long idPublicacion) {
         return comentarioRepository.findAllComentariosByPublicacionOrdenados(idPublicacion);
@@ -112,7 +106,6 @@ public class ComentarioServiceImpl implements ComentarioService {
         if (respuestas != null && !respuestas.isEmpty()) {
             respuestas.forEach(hijo -> eliminarComentario(hijo.getIdComentario()));
         }
-
         comentarioRepository.delete(comentarioAEliminar);
     }
 }
