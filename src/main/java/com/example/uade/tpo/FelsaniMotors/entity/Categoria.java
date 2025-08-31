@@ -21,11 +21,11 @@ public class Categoria {
     private Long idCategoria;
     
     @Column
-    private String nombre;
+    private String categoria;
+
+    @Column
+    private String marca;
     
     @Column
     private String imagen;
-    
-    @Column
-    private String descripcion;
 }

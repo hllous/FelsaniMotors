@@ -14,6 +14,29 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Optional;
 
+/*
+ * Metodos CRUD
+ * 
+ * GET
+ * 
+ * - getAllCategorias = Devuelve todas las categorias
+ * - getCategoriaById = Devuelve una categoria por su id
+ * - getCategoriaByNombre = Devuelve una categoria por su nombre
+ * 
+ * POST
+ * 
+ * - createCategoria = Crea una nueva categoria
+ * 
+ * CRUD
+ * 
+ * - updateCategoria = Actualiza una categoria
+ * 
+ * DELETE
+ * 
+ * - deleteCategoria = Elimina una categoria
+ * 
+ */
+
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaController {

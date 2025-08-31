@@ -39,9 +39,9 @@ public class CategoriaServiceImpl implements CategoriaService {
         }
         
         Categoria nuevaCategoria = new Categoria();
-        nuevaCategoria.setNombre(nombre);
+        nuevaCategoria.setCategoria(nombre);
         nuevaCategoria.setImagen(imagen);
-        nuevaCategoria.setDescripcion(descripcion);
+        nuevaCategoria.setMarca(descripcion);
         
         return categoriaRepository.save(nuevaCategoria);
     }
@@ -62,16 +62,16 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (categoriaOpt.isPresent()) {
             // Si la categoría existe, actualizo sus propiedades
             Categoria categoria = categoriaOpt.get();
-            categoria.setNombre(nombre);
+            categoria.setCategoria(nombre);
             categoria.setImagen(imagen);
-            categoria.setDescripcion(descripcion);
+            categoria.setMarca(descripcion);
             return categoriaRepository.save(categoria);
         } else {
             // Si la categoría no existe, creo una nueva con los datos proporcionados
             Categoria nuevaCategoria = new Categoria();
-            nuevaCategoria.setNombre(nombre);
+            nuevaCategoria.setCategoria(nombre);
             nuevaCategoria.setImagen(imagen);
-            nuevaCategoria.setDescripcion(descripcion);
+            nuevaCategoria.setMarca(descripcion);
             return categoriaRepository.save(nuevaCategoria);
         }
     }

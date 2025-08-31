@@ -14,33 +14,29 @@ import java.util.List;
 @Repository
 public interface PublicacionRepository extends JpaRepository<Publicacion, Long> {
     
-    /**
-     * Encuentra publicaciones por el ID del usuario
-     */
+
+    // Encuentro publicaciones por el ID del usuario
+
     @Query("SELECT p FROM Publicacion p WHERE p.usuario.id = :idUsuario")
     List<Publicacion> findByIdUsuario(@Param("idUsuario") Long idUsuario);
 
-    /**
-     * Busca publicaciones por título, ubicación o descripción
-     */
+    // Busco publicaciones por titulo, ubicacion o descripcion similar a un texto
+
     @Query("SELECT p FROM Publicacion p WHERE " +
            "LOWER(p.titulo) LIKE LOWER(CONCAT('%', :busqueda, '%')) OR " +
            "LOWER(p.ubicacion) LIKE LOWER(CONCAT('%', :busqueda, '%')) OR " +
            "LOWER(p.descripcion) LIKE LOWER(CONCAT('%', :busqueda, '%'))")
     Page<Publicacion> buscarPublicaciones(@Param("busqueda") String busqueda, Pageable pageable);
     
-    /**
-     * Encuentra publicaciones por rango de precio
-     */
+    // Encuentro publicaciones por rango de precio
+
     List<Publicacion> findByPrecioBetween(float precioMin, float precioMax);
     
-    /**
-     * Encuentra publicaciones activas (por estado)
-     */
+    // Encuentro publicaciones por estado
+
     List<Publicacion> findByEstado(char estado);
     
-    /**
-     * Obtiene todas las publicaciones paginadas y ordenadas por fecha de publicación descendente
-     */
+    // Obtengo todas las publicaciones ordenadas por fecha de publicacion, de manera descendente
+
     Page<Publicacion> findAllByOrderByFechaPublicacionDesc(Pageable pageable);
 }

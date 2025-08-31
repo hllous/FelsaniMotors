@@ -12,42 +12,42 @@ public interface PublicacionService {
     
     // --- Seccion GET --- //
     
-    // Obtiene todas las publicaciones paginadas
+    // Obtengo todas las publicaciones
     Page<PublicacionResponse> getAllPublicaciones(Pageable pageable);
     
-    // Busca una publicacion por su ID
+    // Obtengo una publicacion con su id
     Optional<PublicacionResponse> getPublicacionById(Long id);
     
-    // Obtiene publicaciones de un usuario especifico
+    // Obtengi publicaciones de un usuario especifico
     List<PublicacionResponse> getPublicacionesByIdUsuario(Long idUsuario);
     
-    // Busca publicaciones por termino de busqueda
+    // Obtengo publicaciones por una busqueda de un string en el titulo, descripcion o ubicacion
     Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable);
     
-    // Obtiene publicaciones por rango de precio
+    // Obtengo publicaciones por rango de precio
     List<PublicacionResponse> getPublicacionesByRangoPrecio(float precioMin, float precioMax);
     
-    // Obtiene publicaciones por estado
+    // Obtebgi publicaciones por estado
     List<PublicacionResponse> getPublicacionesByEstado(char estado);
     
     // --- Seccion POST --- //
     
-    // Crea una nueva publicacion (usando parámetros individuales)
+    // Creo una nueva publicacion
     PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
                                          String ubicacion, float precio, String metodoDePago,
                                          String urlImagen, Boolean esPrincipal, Integer orden);
     
     // --- Seccion PUT --- //
     
-    //Actualiza una publicacion existente (usando parámetros individuales)
+    //Actualizo una publicacion existente
     PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
                                          String ubicacion, float precio, String metodoDePago, Long idUsuario);
     
-    // Actualiza el estado de una publicacion
+    // Actualizo solo el estado de una publicacion
     PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario);
 
     // --- Seccion DELETE --- //
     
-    // Elimina una publicacion
+    // Elimino una publicacion
     boolean deletePublicacion(Long idPublicacion, Long idUsuario);
 }
