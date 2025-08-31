@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PublicacionUpdateRequest {
     // Campos actualizables
-    // No incluimos idUsuario, idAuto, fechaPublicacion
-
     private String titulo;
     private String descripcion;
     private String ubicacion;
     private float precio;
     private String metodoDePago;
-    
+    private Long idUsuario;  // Para verificar permisos
 }

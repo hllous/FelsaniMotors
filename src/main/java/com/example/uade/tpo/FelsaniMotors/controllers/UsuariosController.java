@@ -20,7 +20,7 @@ import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicateException;
 import com.example.uade.tpo.FelsaniMotors.service.usuario.UsuarioService;
 
 @RestController
-@RequestMapping("usuarios")
+@RequestMapping("/api/usuarios")
 public class UsuariosController {
 
     @Autowired

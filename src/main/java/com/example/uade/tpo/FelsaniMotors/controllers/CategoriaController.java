@@ -1,7 +1,7 @@
 package com.example.uade.tpo.FelsaniMotors.controllers;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Categoria;
-import com.example.uade.tpo.FelsaniMotors.entity.dto.CategoriaRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.request.CategoriaRequest;
 import com.example.uade.tpo.FelsaniMotors.exceptions.CategoriaDuplicadaException;
 import com.example.uade.tpo.FelsaniMotors.service.categoria.CategoriaService;
 
@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("categorias")
+@RequestMapping("/api/categorias")
 public class CategoriaController {
 
     @Autowired
@@ -83,12 +83,11 @@ public class CategoriaController {
     // --- Seccion PUT --- //
     
     // PUT - Actualizo categoria
-    @PutMapping("/{id}")
-    public ResponseEntity<Categoria> updateCategoria(@PathVariable Long id, @RequestBody CategoriaRequest categoriaRequest) {
+    @PutMapping("/{idCategoria}")
+    public ResponseEntity<Categoria> updateCategoria(@PathVariable Long idCategoria, @RequestBody CategoriaRequest categoriaRequest) {
 
         Categoria categoriaActualizada = categoriaService.updateCategoria(
-
-            id,
+            idCategoria,
             categoriaRequest.getNombre(),
             categoriaRequest.getImagen(),
             categoriaRequest.getDescripcion()
@@ -100,10 +99,10 @@ public class CategoriaController {
     // --- Seccion DELETE --- //
     
     // DELETE - Elimino categoria
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) {
+    @DeleteMapping("/{idCategoria}")
+    public ResponseEntity<Void> deleteCategoria(@PathVariable Long idCategoria) {
 
-        boolean eliminado = categoriaService.deleteCategoria(id);
+        boolean eliminado = categoriaService.deleteCategoria(idCategoria);
         
         if (eliminado) {
 

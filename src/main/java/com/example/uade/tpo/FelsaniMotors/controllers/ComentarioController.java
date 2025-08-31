@@ -18,70 +18,84 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
 import com.example.uade.tpo.FelsaniMotors.service.comentario.ComentarioService;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @RestController
-@RequestMapping("/comentarios")
+@RequestMapping("/api/publicaciones/{idPublicacion}/comentarios")
 public class ComentarioController {
 
     @Autowired
     private ComentarioService comentarioService;
 
     @PostMapping
-    public ResponseEntity<Comentario> crearComentario(@Valid @RequestBody CreateComentarioRequest request) {
-        Comentario nuevo = new Comentario();
-        nuevo.setTexto(request.getTexto());
-        nuevo.setFecha(new Date());
-        Comentario creado = comentarioService.crear(nuevo);
+    public ResponseEntity<Comentario> crearComentario(
+            @PathVariable Long idPublicacion,
+            @RequestBody CreateComentarioRequest request) {
+        Comentario nuevoComentario = new Comentario();
+        nuevoComentario.setTexto(request.getTexto());
+        nuevoComentario.setFecha(new Date());
+        Comentario comentarioCreado = comentarioService.crearComentario(idPublicacion, nuevoComentario);
 
         return ResponseEntity
-                .created(URI.create("/comentarios/" + creado.getIdComentario()))
-                .body(creado);
+                .created(URI.create("/api/publicaciones/" + idPublicacion + "/comentarios/" + comentarioCreado.getIdComentario()))
+                .body(comentarioCreado);
     }
 
-    @PostMapping("/{id}/respuestas")
-    public ResponseEntity<Comentario> responder(
-            @PathVariable Long id,
-            @Valid @RequestBody CreateComentarioRequest request) {
+    @PostMapping("/{idComentario}/respuestas")
+    public ResponseEntity<Comentario> crearRespuesta(
+            @PathVariable Long idPublicacion,
+            @PathVariable Long idComentario,
+            @RequestBody CreateComentarioRequest request) {
 
         Comentario respuesta = new Comentario();
         respuesta.setTexto(request.getTexto());
         respuesta.setFecha(new Date());
 
-        Comentario creado = comentarioService.responder(id, respuesta);
+        Comentario creado = comentarioService.crearRespuesta(idPublicacion, idComentario, respuesta);
 
         return ResponseEntity
-                .created(URI.create("/comentarios/" + creado.getIdComentario()))
+                .created(URI.create("/api/publicaciones/" + idPublicacion + "/comentarios/" + creado.getIdComentario()))
                 .body(creado);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Comentario> getComentario(@PathVariable Long id) {
-        return ResponseEntity.ok(comentarioService.obtenerPorId(id));
+    @GetMapping("/{idComentario}")
+    public ResponseEntity<Comentario> obtenerComentario(
+            @PathVariable Long idPublicacion, 
+            @PathVariable Long idComentario) {
+        return ResponseEntity.ok(comentarioService.buscarPorId(idComentario));
     }
 
     @GetMapping
-    public ResponseEntity<List<Comentario>> listarRaiz() {
-        return ResponseEntity.ok(comentarioService.listarRaiz());
+    public ResponseEntity<List<Comentario>> listarComentariosPrincipales(@PathVariable Long idPublicacion) {
+        return ResponseEntity.ok(comentarioService.listarComentariosPrincipales(idPublicacion));
+    }
+    
+    @GetMapping("/jerarquicos")
+    public ResponseEntity<List<Comentario>> listarComentariosJerarquicamente(@PathVariable Long idPublicacion) {
+        return ResponseEntity.ok(comentarioService.listarComentariosOrdenados(idPublicacion));
     }
 
-    @GetMapping("/{id}/respuestas")
-    public ResponseEntity<List<Comentario>> listarRespuestas(@PathVariable Long id) {
-        return ResponseEntity.ok(comentarioService.listarRespuestas(id));
+    @GetMapping("/{idComentario}/respuestas")
+    public ResponseEntity<List<Comentario>> listarRespuestas(
+            @PathVariable Long idPublicacion,
+            @PathVariable Long idComentario) {
+        return ResponseEntity.ok(comentarioService.listarRespuestas(idComentario));
     }
 
-    @PutMapping("/{id}/texto")
+    @PutMapping("/{idComentario}/texto")
     public ResponseEntity<Comentario> actualizarTexto(
-            @PathVariable Long id,
-            @Valid @RequestBody UpdateTextoRequest request) {
+            @PathVariable Long idPublicacion,
+            @PathVariable Long idComentario,
+            @RequestBody UpdateTextoRequest request) {
 
-        return ResponseEntity.ok(comentarioService.actualizarTexto(id, request.getTexto()));
+        return ResponseEntity.ok(comentarioService.actualizarTexto(idComentario, request.getTexto()));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        comentarioService.eliminar(id);
+    @DeleteMapping("/{idComentario}")
+    public ResponseEntity<Void> eliminarComentario(
+            @PathVariable Long idPublicacion,
+            @PathVariable Long idComentario) {
+        comentarioService.eliminarComentario(idComentario);
         return ResponseEntity.noContent().build();
     }
 

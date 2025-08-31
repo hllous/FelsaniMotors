@@ -20,12 +20,12 @@ public class Publicacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPublicacion;
     
-    // Relación con Usuario - versión limpia
+    // Relación con Usuario
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
     
-    // Relación con Auto - versión limpia
+    // Relación con Auto
     @ManyToOne
     @JoinColumn(name = "id_auto", nullable = false)
     private Auto auto;
@@ -36,7 +36,7 @@ public class Publicacion {
     @Column
     private String descripcion;
     
-    @Column(length = 150)
+    @Column
     private String ubicacion;
     
     @Column(nullable = false)
@@ -48,12 +48,19 @@ public class Publicacion {
     @Column(nullable = false)
     private char estado;
     
-    @Column(name = "metodo_pago", length = 50)
+    @Column(name = "metodo_pago")
     private String metodoDePago;
+
+    // cascade = propaga operaciones de persistencia de entidad padre -> hijo
+    // orphan removal = elimina hijos cuando se elimina un padre
     
     // Relación con las fotos
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Foto> fotos = new ArrayList<>();
+    
+    // Relacion con los comentarios
+    @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comentario> comentarios = new ArrayList<>();
     
     // Métodos helper para manejar la relación bidireccional con Foto
     public void addFoto(Foto foto) {

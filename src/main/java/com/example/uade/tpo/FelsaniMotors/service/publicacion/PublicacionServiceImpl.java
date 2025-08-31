@@ -1,9 +1,6 @@
 package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
-import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionCreateRequest;
-import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionUpdateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
-
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
@@ -103,57 +100,75 @@ public class PublicacionServiceImpl implements PublicacionService {
     // --- Seccion POST --- //
     
     @Override
-    public PublicacionResponse createPublicacion(PublicacionCreateRequest createRequest) {
-        Publicacion publicacion = convertToEntity(createRequest);
+    public PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, 
+                                                String descripcion, String ubicacion, 
+                                                float precio, String metodoDePago,
+                                                String urlImagen, Boolean esPrincipal, Integer orden) {
+        // Crear directamente la entidad
+        Publicacion publicacion = new Publicacion();
         
-        // Si es una nueva publicacion, asigno la fecha actual
-        if (publicacion.getFechaPublicacion() == null) {
-            publicacion.setFechaPublicacion(new Date());
+        // Asignar el usuario
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if (usuario.isPresent()) {
+            publicacion.setUsuario(usuario.get());
+        } else {
+            throw new RuntimeException("Usuario no encontrado con ID: " + idUsuario);
         }
         
-        // Por defecto, establecemos el estado en 'A' (Activo)
+        // Asignar el auto
+        Optional<Auto> auto = autoRepository.findById(idAuto);
+        if (auto.isPresent()) {
+            publicacion.setAuto(auto.get());
+        } else {
+            throw new RuntimeException("Auto no encontrado con ID: " + idAuto);
+        }
+        
+        // Establecer propiedades básicas directamente
+        publicacion.setTitulo(titulo);
+        publicacion.setDescripcion(descripcion);
+        publicacion.setUbicacion(ubicacion);
+        publicacion.setPrecio(precio);
+        publicacion.setMetodoDePago(metodoDePago);
+        publicacion.setFechaPublicacion(new Date());
         publicacion.setEstado('A');
         
-        // Primero guardamos la publicacion
+        // Guardar la publicación
         Publicacion savedPublicacion = publicacionRepository.save(publicacion);
         
-        // Si hay informacion de foto en la solicitud, creamos y guardamos la foto
-        if (createRequest.getUrlImagen() != null && !createRequest.getUrlImagen().isEmpty()) {
+        // Manejar la foto si existe
+        if (urlImagen != null && !urlImagen.isEmpty()) {
             Foto foto = new Foto();
             foto.setPublicacion(savedPublicacion);
-            
-            // Si no se especifica, establecemos como principal
-            foto.setEsPrincipal(createRequest.getEsPrincipal() != null ? createRequest.getEsPrincipal() : true);
-            
-            // Si no se especifica orden, establecemos 0
-            foto.setOrden(createRequest.getOrden() != null ? createRequest.getOrden() : 0);
-            
+            foto.setEsPrincipal(esPrincipal != null ? esPrincipal : true);
+            foto.setOrden(orden != null ? orden : 0);
             fotoRepository.save(foto);
         }
         
+        // Convertir a DTO para la respuesta
         return convertToDto(savedPublicacion);
     }
 
     // --- Seccion PUT --- //
     
     @Override
-    public PublicacionResponse updatePublicacion(Long idPublicacion, PublicacionUpdateRequest updateRequest, Long idUsuario) {
+    public PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
+                                                String ubicacion, float precio, String metodoDePago, Long idUsuario) {
         Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
         if (publicacionOpt.isPresent()) {
             Publicacion publicacion = publicacionOpt.get();
             
-            // Verificar si el usuario es el propietario de la publicacion
+            // Verificar si el usuario es el propietario
             if (!publicacion.getUsuario().getId().equals(idUsuario)) {
                 throw new RuntimeException("No tienes permiso para actualizar esta publicacion");
             }
             
-            // Actualizar los campos desde el DTO
-            publicacion.setTitulo(updateRequest.getTitulo());
-            publicacion.setDescripcion(updateRequest.getDescripcion());
-            publicacion.setUbicacion(updateRequest.getUbicacion());
-            publicacion.setPrecio(updateRequest.getPrecio());
-            publicacion.setMetodoDePago(updateRequest.getMetodoDePago());
+            // Actualizar campos directamente
+            publicacion.setTitulo(titulo);
+            publicacion.setDescripcion(descripcion);
+            publicacion.setUbicacion(ubicacion);
+            publicacion.setPrecio(precio);
+            publicacion.setMetodoDePago(metodoDePago);
             
             Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
             return convertToDto(updatedPublicacion);
@@ -204,8 +219,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     // --- Metodos de conversion --- //
     
-    @Override
-    public PublicacionResponse convertToDto(Publicacion publicacion) {
+    private PublicacionResponse convertToDto(Publicacion publicacion) {
         PublicacionResponse dto = new PublicacionResponse();
         dto.setIdPublicacion(publicacion.getIdPublicacion());
         
@@ -240,43 +254,5 @@ public class PublicacionServiceImpl implements PublicacionService {
         
         return dto;
     }
-    
-    @Override
-    public Publicacion convertToEntity(PublicacionCreateRequest createRequest) {
-        Publicacion publicacion = new Publicacion();
-        
-        // Buscar y asignar entidades a partir de los IDs
-        if (createRequest.getIdUsuario() != null) {
-            Optional<Usuario> usuario = usuarioRepository.findById(createRequest.getIdUsuario());
-            if (usuario.isPresent()) {
-                publicacion.setUsuario(usuario.get());
-            } else {
-                throw new RuntimeException("Usuario no encontrado con ID: " + createRequest.getIdUsuario());
-            }
-        } else {
-            throw new RuntimeException("Se requiere un ID de usuario para crear una publicacion");
-        }
-        
-        if (createRequest.getIdAuto() != null) {
-            Optional<Auto> auto = autoRepository.findById(createRequest.getIdAuto());
-            if (auto.isPresent()) {
-                publicacion.setAuto(auto.get());
-            } else {
-                throw new RuntimeException("Auto no encontrado con ID: " + createRequest.getIdAuto());
-            }
-        } else {
-            throw new RuntimeException("Se requiere un ID de auto para crear una publicacion");
-        }
-        
-        // Propiedades basicas
-        publicacion.setTitulo(createRequest.getTitulo());
-        publicacion.setDescripcion(createRequest.getDescripcion());
-        publicacion.setUbicacion(createRequest.getUbicacion());
-        publicacion.setPrecio(createRequest.getPrecio());
-        publicacion.setMetodoDePago(createRequest.getMetodoDePago());
-        
-        // La fecha de publicacion y el estado se establecen en el metodo createPublicacion
-        
-        return publicacion;
-    }
+
 }

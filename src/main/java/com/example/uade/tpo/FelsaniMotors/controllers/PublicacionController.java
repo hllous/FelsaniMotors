@@ -1,8 +1,9 @@
 package com.example.uade.tpo.FelsaniMotors.controllers;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionUpdateRequest;
-import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
+import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionEstadoRequest;
 import com.example.uade.tpo.FelsaniMotors.service.publicacion.PublicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,12 @@ public class PublicacionController {
     @GetMapping
     public ResponseEntity<Page<PublicacionResponse>> getAllPublicaciones(
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Long idUsuario,
+            @RequestParam(required = false) Character estado,
+            @RequestParam(required = false) Float precioMin,
+            @RequestParam(required = false) Float precioMax,
+            @RequestParam(required = false) String busqueda) {
         
         Pageable pageable;
         if (page == null || size == null) {
@@ -35,7 +41,45 @@ public class PublicacionController {
         } else {
             pageable = PageRequest.of(page, size);
         }
+        
+        // Si hay algún filtro específico, aplicarlo
+        if (idUsuario != null) {
+            List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByIdUsuario(idUsuario);
+            if (publicaciones.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                // Convertir lista a Page para mantener la consistencia de la respuesta
+                Page<PublicacionResponse> pageResult = new org.springframework.data.domain.PageImpl<>(publicaciones);
+                return ResponseEntity.ok(pageResult);
+            }
+        } else if (estado != null) {
+            List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByEstado(estado);
+            if (publicaciones.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                // Convertir lista a Page para mantener la consistencia de la respuesta
+                Page<PublicacionResponse> pageResult = new org.springframework.data.domain.PageImpl<>(publicaciones);
+                return ResponseEntity.ok(pageResult);
+            }
+        } else if (precioMin != null && precioMax != null) {
+            List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByRangoPrecio(precioMin, precioMax);
+            if (publicaciones.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                // Convertir lista a Page para mantener la consistencia de la respuesta
+                Page<PublicacionResponse> pageResult = new org.springframework.data.domain.PageImpl<>(publicaciones);
+                return ResponseEntity.ok(pageResult);
+            }
+        } else if (busqueda != null && !busqueda.trim().isEmpty()) {
+            Page<PublicacionResponse> publicaciones = publicacionService.buscarPublicaciones(busqueda, pageable);
+            if (publicaciones.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.ok(publicaciones);
+            }
+        }
             
+        // Si no hay filtros, devolver todas las publicaciones
         Page<PublicacionResponse> publicaciones = publicacionService.getAllPublicaciones(pageable);
         
         if (publicaciones.isEmpty()) {
@@ -45,9 +89,9 @@ public class PublicacionController {
         }
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<PublicacionResponse> getPublicacionById(@PathVariable Long id) {
-        Optional<PublicacionResponse> publicacion = publicacionService.getPublicacionById(id);
+    @GetMapping("/{idPublicacion}")
+    public ResponseEntity<PublicacionResponse> getPublicacionById(@PathVariable Long idPublicacion) {
+        Optional<PublicacionResponse> publicacion = publicacionService.getPublicacionById(idPublicacion);
         
         if (publicacion.isPresent()) {
             return ResponseEntity.ok(publicacion.get());
@@ -56,71 +100,24 @@ public class PublicacionController {
         }
     }
     
-    @GetMapping("/usuario/{idUsuario}")
-    public ResponseEntity<List<PublicacionResponse>> getPublicacionesByUsuario(@PathVariable Long idUsuario) {
-        List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByIdUsuario(idUsuario);
-        
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
-
-    @GetMapping("/search")
-    public ResponseEntity<Page<PublicacionResponse>> searchPublicaciones(
-            @RequestParam String query,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
-
-        Pageable pageable;
-
-        if (page == null || size == null) {
-            pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        } else {
-            pageable = PageRequest.of(page, size);
-        }
-                
-        Page<PublicacionResponse> publicaciones = publicacionService.buscarPublicaciones(query, pageable);
-        
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
-    @GetMapping("/precio")
-    public ResponseEntity<List<PublicacionResponse>> getPublicacionesByRangoPrecio(
-            @RequestParam float min,
-            @RequestParam float max) {
-        
-        List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByRangoPrecio(min, max);
-        
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<PublicacionResponse>> getPublicacionesByEstado(@PathVariable char estado) {
-        List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByEstado(estado);
-        
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
     // --- Seccion POST --- //
     
     @PostMapping
-    public ResponseEntity<PublicacionResponse> createPublicacion(@RequestBody PublicacionCreateRequest createRequest) {
-        PublicacionResponse nuevaPublicacion = publicacionService.createPublicacion(createRequest);
+    public ResponseEntity<PublicacionResponse> createPublicacion(@RequestBody PublicacionCreateRequest request) {
+        
+        PublicacionResponse nuevaPublicacion = publicacionService.createPublicacion(
+            request.getIdUsuario(), 
+            request.getIdAuto(), 
+            request.getTitulo(), 
+            request.getDescripcion(), 
+            request.getUbicacion(), 
+            request.getPrecio(), 
+            request.getMetodoDePago(), 
+            request.getUrlImagen(), 
+            request.getEsPrincipal(), 
+            request.getOrden()
+        );
+        
         return ResponseEntity.created(URI.create("/api/publicaciones/" + nuevaPublicacion.getIdPublicacion()))
                           .body(nuevaPublicacion);
     }
@@ -130,25 +127,32 @@ public class PublicacionController {
     @PutMapping("/{idPublicacion}")
     public ResponseEntity<PublicacionResponse> updatePublicacion(
             @PathVariable Long idPublicacion,
-            @RequestBody PublicacionUpdateRequest updateRequest,
-            @RequestParam Long idUsuario) {
+            @RequestBody PublicacionUpdateRequest request) {
         
         try {
-            PublicacionResponse publicacionActualizada = publicacionService.updatePublicacion(idPublicacion, updateRequest, idUsuario);
+            PublicacionResponse publicacionActualizada = publicacionService.updatePublicacion(
+                idPublicacion, 
+                request.getTitulo(), 
+                request.getDescripcion(), 
+                request.getUbicacion(), 
+                request.getPrecio(), 
+                request.getMetodoDePago(), 
+                request.getIdUsuario()
+            );
             return ResponseEntity.ok(publicacionActualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
     
-    @PatchMapping("/{idPublicacion}/estado")
+    @PutMapping("/{idPublicacion}/estado")
     public ResponseEntity<PublicacionResponse> updateEstadoPublicacion(
             @PathVariable Long idPublicacion,
-            @RequestParam char estado,
-            @RequestParam Long idUsuario) {
+            @RequestBody PublicacionEstadoRequest request) {
         
         try {
-            PublicacionResponse publicacionActualizada = publicacionService.updateEstadoPublicacion(idPublicacion, estado, idUsuario);
+            PublicacionResponse publicacionActualizada = publicacionService.updateEstadoPublicacion(
+                idPublicacion, request.getEstado(), request.getIdUsuario());
             return ResponseEntity.ok(publicacionActualizada);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

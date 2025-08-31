@@ -2,50 +2,69 @@ package com.example.uade.tpo.FelsaniMotors.service.comentario;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
+import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioInvalidoException;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioNoEncontradoException;
 import com.example.uade.tpo.FelsaniMotors.repository.ComentarioRepository;
-
-import lombok.RequiredArgsConstructor;
+import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
 
 @Service
-@RequiredArgsConstructor
-@Transactional
 public class ComentarioServiceImpl implements ComentarioService {
 
-    private final ComentarioRepository comentarioRepository;
+    @Autowired
+    private ComentarioRepository comentarioRepository;
+    
+    @Autowired
+    private PublicacionRepository publicacionRepository;
 
     @Override
-    public Comentario crear(Comentario comentario) {
-        if (comentario.getIdComentario() != null) {
-            throw new ComentarioInvalidoException("Para crear no envíes idComentario.");
-        }
+    public Comentario crearComentario(Long idPublicacion, Comentario comentario) {
         if (comentario.getTexto() == null || comentario.getTexto().isBlank()) {
             throw new ComentarioInvalidoException("El texto del comentario es obligatorio.");
         }
         if (comentario.getFecha() == null) {
             comentario.setFecha(new Date());
         }
+        
+        // Asignar la publicacion al comentario usando findById
+        Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
+        if (publicacion.isEmpty()) {
+            throw new ComentarioInvalidoException("La publicación con ID " + idPublicacion + " no existe.");
+        }
+        comentario.setPublicacion(publicacion.get());
+        
         return comentarioRepository.save(comentario);
     }
 
     @Override
-    public Comentario responder(Long idComentarioPadre, Comentario respuesta) {
-        Comentario padre = comentarioRepository.findById(idComentarioPadre)
-                .orElseThrow(() -> new ComentarioNoEncontradoException(idComentarioPadre));
+    public Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Comentario respuesta) {
 
-        if (respuesta.getIdComentario() != null) {
-            throw new ComentarioInvalidoException("Para responder no envíes idComentario.");
+        // Asignar la publicación al comentario usando findById de forma simple
+        Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
+        if (publicacion.isEmpty()) {
+            throw new ComentarioInvalidoException("La publicación con ID " + idPublicacion + " no existe.");
         }
+
+        // Buscar el comentario padre
+        Optional<Comentario> padre = comentarioRepository.findById(idComentarioPadre);
+        if (padre.isEmpty()) {
+            throw new ComentarioNoEncontradoException(idComentarioPadre);
+        }
+
         if (respuesta.getTexto() == null || respuesta.getTexto().isBlank()) {
             throw new ComentarioInvalidoException("El texto de la respuesta es obligatorio.");
         }
-        respuesta.setComentarioPadre(padre);
+
+        respuesta.setPublicacion(publicacion.get());
+        respuesta.setPadre(padre.get());
+
         if (respuesta.getFecha() == null) {
             respuesta.setFecha(new Date());
         }
@@ -53,25 +72,27 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Comentario obtenerPorId(Long id) {
-        return comentarioRepository.findById(id)
-                .orElseThrow(() -> new ComentarioNoEncontradoException(id));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comentario> listarRaiz() {
-        return comentarioRepository.findByComentarioPadreIsNullOrderByFechaAsc();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comentario> listarRespuestas(Long idComentarioPadre) {
-        if (!comentarioRepository.existsById(idComentarioPadre)) {
-            throw new ComentarioNoEncontradoException(idComentarioPadre);
+    public Comentario buscarPorId(Long idComentario) {
+        Optional<Comentario> comentario = comentarioRepository.findById(idComentario);
+        if (comentario.isEmpty()) {
+            throw new ComentarioNoEncontradoException(idComentario);
         }
-        return comentarioRepository.findByComentarioPadreIdComentarioOrderByFechaAsc(idComentarioPadre);
+        return comentario.get();
+    }
+    
+    @Override
+    public List<Comentario> listarComentariosPrincipales(Long idPublicacion) {
+        return comentarioRepository.findComentariosPrincipalesByIdPublicacion(idPublicacion);
+    }
+
+    @Override
+    public List<Comentario> listarRespuestas(Long idComentarioPadre) {
+        return comentarioRepository.findRespuestasByPadreId(idComentarioPadre);
+    }
+    
+    @Override
+    public List<Comentario> listarComentariosOrdenados(Long idPublicacion) {
+        return comentarioRepository.findAllComentariosByPublicacionOrdenados(idPublicacion);
     }
 
     @Override
@@ -79,20 +100,20 @@ public class ComentarioServiceImpl implements ComentarioService {
         if (nuevoTexto == null || nuevoTexto.isBlank()) {
             throw new ComentarioInvalidoException("El nuevo texto no puede estar vacío.");
         }
-        Comentario existente = obtenerPorId(idComentario);
-        existente.setTexto(nuevoTexto);
-        return comentarioRepository.save(existente);
+        Comentario comentarioAModificar = buscarPorId(idComentario);
+        comentarioAModificar.setTexto(nuevoTexto);
+        return comentarioRepository.save(comentarioAModificar);
     }
 
     @Override
-    public void eliminar(Long idComentario) {
-        Comentario existente = obtenerPorId(idComentario);
+    public void eliminarComentario(Long idComentario) {
+        Comentario comentarioAEliminar = buscarPorId(idComentario);
 
-        List<Comentario> respuestas = existente.getRespuestas();
+        List<Comentario> respuestas = comentarioAEliminar.getRespuestas();
         if (respuestas != null && !respuestas.isEmpty()) {
-            respuestas.forEach(hijo -> eliminar(hijo.getIdComentario()));
+            respuestas.forEach(hijo -> eliminarComentario(hijo.getIdComentario()));
         }
 
-        comentarioRepository.delete(existente);
+        comentarioRepository.delete(comentarioAEliminar);
     }
 }

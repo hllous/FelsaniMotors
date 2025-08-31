@@ -1,12 +1,9 @@
 package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
-import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionCreateRequest;
-import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionUpdateRequest;
-import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
-
-import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,13 +32,16 @@ public interface PublicacionService {
     
     // --- Seccion POST --- //
     
-    // Crea una nueva publicacion
-    PublicacionResponse createPublicacion(PublicacionCreateRequest createRequest);
+    // Crea una nueva publicacion (usando parámetros individuales)
+    PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
+                                         String ubicacion, float precio, String metodoDePago,
+                                         String urlImagen, Boolean esPrincipal, Integer orden);
     
     // --- Seccion PUT --- //
     
-    //Actualiza una publicacion existente
-    PublicacionResponse updatePublicacion(Long idPublicacion, PublicacionUpdateRequest updateRequest, Long idUsuario);
+    //Actualiza una publicacion existente (usando parámetros individuales)
+    PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
+                                         String ubicacion, float precio, String metodoDePago, Long idUsuario);
     
     // Actualiza el estado de una publicacion
     PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario);
@@ -50,12 +50,4 @@ public interface PublicacionService {
     
     // Elimina una publicacion
     boolean deletePublicacion(Long idPublicacion, Long idUsuario);
-    
-    // --- Metodos de conversion --- //
-    
-    /* Convierte entidad a DTO */
-    PublicacionResponse convertToDto(Publicacion publicacion);
-    
-    /* Convierte DTO a entidad */
-    Publicacion convertToEntity(PublicacionCreateRequest createRequest);
 }

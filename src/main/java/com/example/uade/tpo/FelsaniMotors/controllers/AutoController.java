@@ -20,7 +20,7 @@ import com.example.uade.tpo.FelsaniMotors.exceptions.AutoDuplicateException;
 import com.example.uade.tpo.FelsaniMotors.service.auto.AutoService;
 
 @RestController
-@RequestMapping("/autos")
+@RequestMapping("/api/autos")
 public class AutoController {
 
     @Autowired

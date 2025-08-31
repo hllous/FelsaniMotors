@@ -20,30 +20,25 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "comentario")
+@Table(name = "comentarios")
 public class Comentario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComentario;
 
-    /*  N:1 con Publicacion
+    // N:1 con Publicacion
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_publicacion", nullable = false)
     private Publicacion publicacion;
 
-    // N:1 con Usuario (autor)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
-*/
     // Autorreferencia: comentario padre (opcional)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_comentario_padre")
-    private Comentario comentarioPadre;
+    private Comentario padre;
 
     // Hijos/inverso (opcional activar)
-    @OneToMany(mappedBy = "comentarioPadre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "padre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> respuestas;
 
     @Column(nullable = false, length = 2000)

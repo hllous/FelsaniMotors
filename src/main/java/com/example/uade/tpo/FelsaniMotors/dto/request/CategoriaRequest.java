@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.entity.dto;
+package com.example.uade.tpo.FelsaniMotors.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

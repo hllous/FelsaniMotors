@@ -23,7 +23,7 @@ import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.service.foto.FotoService;
 
 @RestController
-@RequestMapping("publicaciones")
+@RequestMapping("/api/publicaciones")
 public class FotosController {
 
     @Autowired
