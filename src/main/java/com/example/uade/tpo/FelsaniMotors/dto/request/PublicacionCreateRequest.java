@@ -11,11 +11,6 @@ public class PublicacionCreateRequest {
     // IDs para referencias
     private Long idUsuario;
     private Long idAuto;
-    private Long idCategoria;
-    
-    // Datos para crear una nueva categoría si idCategoria es null
-    private String tipoCategoria;
-    private String marcaCategoria;
     
     // Datos básicos de la publicación
     private String titulo;

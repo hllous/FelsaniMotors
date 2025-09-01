@@ -17,7 +17,7 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
 
     // Encuentro publicaciones por el ID del usuario
 
-    @Query("SELECT p FROM Publicacion p WHERE p.usuario.id = :idUsuario")
+    @Query("SELECT p FROM Publicacion p WHERE p.usuario.idUsuario = :idUsuario")
     List<Publicacion> findByIdUsuario(@Param("idUsuario") Long idUsuario);
 
     // Busco publicaciones por titulo, ubicacion o descripcion similar a un texto

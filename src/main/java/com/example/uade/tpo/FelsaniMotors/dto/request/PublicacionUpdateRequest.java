@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PublicacionUpdateRequest {
-    // Campos actualizables
+
     private String titulo;
     private String descripcion;
     private String ubicacion;
     private float precio;
     private String metodoDePago;
-    private Long idUsuario;  // Para verificar permisos
+    private Long idUsuario;
 }

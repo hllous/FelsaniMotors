@@ -21,24 +21,27 @@ public class Auto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAuto;
 
-    @Column
+    @Column(nullable = false)
     private String marca;
 
-    @Column
+    @Column(nullable = false)
     private String modelo;
 
     @Column
     private Integer anio;
 
-    @Column
+    @Column(nullable = false)
     private String estado;
 
-    @Column
+    @Column(nullable = false)
     private Float kilometraje;
 
-    @Column
+    @Column(nullable = false)
     private String combustible;
-
+    
+    @Column(nullable = false)
+    private String tipoCategoria;
+    
     @Column
     private Integer capacidadTanque;
 
@@ -47,10 +50,6 @@ public class Auto {
 
     @Column
     private String motor;
-
-    @ManyToOne
-    @JoinColumn(name = "categoria_id")
-    private Categoria categoria;
 
     @OneToOne(mappedBy = "auto")
     @JsonIgnore

@@ -18,7 +18,4 @@ public interface AutoService {
 
     //Crear un nuevo auto.
     Auto createAuto(Auto autoRequest) throws AutoDuplicateException;
-    
-    //Asignar un auto a una categoría
-    Auto asignarCategoria(Long idAuto, Long idCategoria);
 }

@@ -15,17 +15,17 @@ import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicadoException;
 public interface UsuarioService {
     // Metodos GET
     Page<UsuarioResponse> getUsuarios(Pageable pageable);
-    Optional<UsuarioResponse> getUsuarioById(Long id);
+    Optional<UsuarioResponse> getUsuarioById(Long idUsuario);
     
     // Metodos POST
     UsuarioResponse createUsuario(UsuarioCreateRequest request) throws UsuarioDuplicadoException;
     
     // Metodos PUT
-    UsuarioResponse updateUsuario(Long id, UsuarioUpdateRequest request);
-    UsuarioResponse cambiarContrasena(Long id, CambioContrasenaRequest request);
+    UsuarioResponse updateUsuario(Long idUsuario, UsuarioUpdateRequest request);
+    UsuarioResponse cambiarContrasena(Long idUsuario, CambioContrasenaRequest request);
     
     // Metodos DELETE
-    void deleteUsuario(Long id);
+    void deleteUsuario(Long idUsuario);
     
     // Metodos de conversión
     UsuarioResponse convertToDto(Usuario usuario);

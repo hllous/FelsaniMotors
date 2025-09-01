@@ -75,7 +75,7 @@ public class UsuariosController {
         UsuarioResponse resultado = usuarioService.createUsuario(request);
         
         return ResponseEntity
-                .created(URI.create("/api/usuarios/" + resultado.getId()))
+                .created(URI.create("/api/usuarios/" + resultado.getIdUsuario()))
                 .body(resultado);
     }
 

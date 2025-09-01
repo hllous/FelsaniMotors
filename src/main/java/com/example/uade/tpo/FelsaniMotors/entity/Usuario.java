@@ -13,17 +13,21 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;               
+    private Long idUsuario;               
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "contrasena_hash", nullable = false)
+    @Column(nullable = false)
     private String contrasena;     
 
+    @Column(nullable = false)
     private String nombre;
+    
+    @Column(nullable = false)
     private String apellido;
     
+    @Column(nullable = false)
     private Integer telefono;
 
     @Enumerated(EnumType.STRING)

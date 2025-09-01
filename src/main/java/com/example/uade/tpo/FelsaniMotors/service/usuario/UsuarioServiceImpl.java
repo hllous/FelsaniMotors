@@ -36,8 +36,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Optional<UsuarioResponse> getUsuarioById(Long id) {
-        return usuarioRepository.findById(id)
+    public Optional<UsuarioResponse> getUsuarioById(Long idUsuario) {
+        return usuarioRepository.findById(idUsuario)
                 .map(this::convertToDto);
     }
 
@@ -65,9 +65,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioResponse updateUsuario(Long id, UsuarioUpdateRequest request) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + id));
+    public UsuarioResponse updateUsuario(Long idUsuario, UsuarioUpdateRequest request) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + idUsuario));
         
         if (request.getNombre() != null) {
             usuario.setNombre(request.getNombre());
@@ -85,9 +85,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioResponse cambiarContrasena(Long id, CambioContrasenaRequest request) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + id));
+    public UsuarioResponse cambiarContrasena(Long idUsuario, CambioContrasenaRequest request) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + idUsuario));
         
         if (usuario.getContrasena().equals(request.getContrasenaActual())) {
             usuario.setContrasena(request.getNuevaContrasena());
@@ -101,9 +101,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void deleteUsuario(Long id) {
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + id));
+    public void deleteUsuario(Long idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + idUsuario));
         
         // Marco el usuario como inactivo
         usuario.setActivo(false);
@@ -123,7 +123,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         
         UsuarioResponse dto = new UsuarioResponse();
-        dto.setId(usuario.getId());
+        dto.setIdUsuario(usuario.getIdUsuario());
         dto.setEmail(usuario.getEmail());
         dto.setNombre(usuario.getNombre());
         dto.setApellido(usuario.getApellido());

@@ -2,12 +2,10 @@ package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
-import com.example.uade.tpo.FelsaniMotors.entity.Categoria;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.repository.AutoRepository;
-import com.example.uade.tpo.FelsaniMotors.repository.CategoriaRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
@@ -36,9 +34,6 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     @Autowired
     private AutoRepository autoRepository;
-    
-    @Autowired
-    private CategoriaRepository categoriaRepository;
 
     // --- Seccion GET --- //
     
@@ -108,8 +103,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     public PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
                                                 String ubicacion, float precio, String metodoDePago,
-                                                String urlImagen, Boolean esPrincipal, Integer orden, 
-                                                Long idCategoria, String tipoCategoria, String marcaCategoria) {
+                                                String urlImagen, Boolean esPrincipal, Integer orden) {
 
 
         Publicacion publicacion = new Publicacion();
@@ -133,43 +127,6 @@ public class PublicacionServiceImpl implements PublicacionService {
             
             Auto autoEntity = auto.get();
             publicacion.setAuto(autoEntity);
-            
-            // Manejo de categoria
-            Categoria categoriaAsignada = null;
-            
-            // Caso 1: Si se proporciona un ID de categoria existente
-            if (idCategoria != null) {
-                Optional<Categoria> categoriaOpt = categoriaRepository.findById(idCategoria);
-                if (categoriaOpt.isPresent()) {
-                    categoriaAsignada = categoriaOpt.get();
-                } else {
-                    throw new RuntimeException("Categoría no encontrada con ID: " + idCategoria);
-                }
-            } 
-            // Caso 2: Si se proporcionan datos para crear una nueva categoria
-            else if (tipoCategoria != null && marcaCategoria != null) {
-                try {
-                    // Verificar si ya existe una categoría con ese tipo y marca
-                    Categoria categoriaExistente = categoriaRepository.findByTipoCategoria(tipoCategoria);
-                    if (categoriaExistente != null && categoriaExistente.getMarca().equals(marcaCategoria)) {
-                        categoriaAsignada = categoriaExistente;
-                    } else {
-                        // Crear nueva categoría
-                        Categoria nuevaCategoria = new Categoria();
-                        nuevaCategoria.setTipoCategoria(tipoCategoria);
-                        nuevaCategoria.setMarca(marcaCategoria);
-                        categoriaAsignada = categoriaRepository.save(nuevaCategoria);
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException("Error al crear la categoría: " + e.getMessage());
-                }
-            }
-            
-            // Asignar la categoria al auto
-            if (categoriaAsignada != null) {
-                autoEntity.setCategoria(categoriaAsignada);
-                autoRepository.save(autoEntity);
-            }
         } else {
             throw new RuntimeException("Auto no encontrado con ID: " + idAuto);
         }
@@ -222,7 +179,7 @@ public class PublicacionServiceImpl implements PublicacionService {
             
             // Verifico si el usuario es el creador de la publicacion
 
-            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
                 throw new RuntimeException("No tienes permiso para actualizar esta publicacion");
             }
             
@@ -252,7 +209,7 @@ public class PublicacionServiceImpl implements PublicacionService {
             
             // Verifico si el usuario es el creador de la publicacion
 
-            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
                 throw new RuntimeException("No tienes permiso para actualizar el estado de esta publicacion");
             }
             
@@ -279,7 +236,7 @@ public class PublicacionServiceImpl implements PublicacionService {
             Publicacion publicacion = publicacionOpt.get();
             
             // Verifico si el usuario es el creador de la publicacion
-            if (!publicacion.getUsuario().getId().equals(idUsuario)) {
+            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
                 throw new RuntimeException("No tienes permiso para eliminar esta publicacion");
             }
             
@@ -304,7 +261,7 @@ public class PublicacionServiceImpl implements PublicacionService {
         // Establecer IDs en lugar de entidades completas (ver dto/response)
         if (publicacion.getUsuario() != null) {
 
-            dto.setIdUsuario(publicacion.getUsuario().getId());
+            dto.setIdUsuario(publicacion.getUsuario().getIdUsuario());
             dto.setNombreUsuario(publicacion.getUsuario().getNombre() + " " + publicacion.getUsuario().getApellido());
         }
         
