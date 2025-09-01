@@ -43,4 +43,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Publicacion> publicaciones = new ArrayList<>();
+    
+    // Relacion con los comentarios del usuario
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<Comentario> comentarios = new ArrayList<>();
 }

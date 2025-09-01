@@ -2,10 +2,12 @@ package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
+import com.example.uade.tpo.FelsaniMotors.entity.Categoria;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.repository.AutoRepository;
+import com.example.uade.tpo.FelsaniMotors.repository.CategoriaRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
@@ -34,6 +36,9 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     @Autowired
     private AutoRepository autoRepository;
+    
+    @Autowired
+    private CategoriaRepository categoriaRepository;
 
     // --- Seccion GET --- //
     
@@ -103,7 +108,8 @@ public class PublicacionServiceImpl implements PublicacionService {
     @Override
     public PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
                                                 String ubicacion, float precio, String metodoDePago,
-                                                String urlImagen, Boolean esPrincipal, Integer orden) {
+                                                String urlImagen, Boolean esPrincipal, Integer orden, 
+                                                Long idCategoria, String tipoCategoria, String marcaCategoria) {
 
 
         Publicacion publicacion = new Publicacion();
@@ -119,7 +125,51 @@ public class PublicacionServiceImpl implements PublicacionService {
         // Asigno el auto
         Optional<Auto> auto = autoRepository.findById(idAuto);
         if (auto.isPresent()) {
-            publicacion.setAuto(auto.get());
+
+            // Verifico que el auto no este ya en uso en otra publicación activa
+            if (auto.get().getPublicacion() != null) {
+                throw new RuntimeException("El auto con ID: " + idAuto + " ya está en uso en otra publicación.");
+            }
+            
+            Auto autoEntity = auto.get();
+            publicacion.setAuto(autoEntity);
+            
+            // Manejo de categoria
+            Categoria categoriaAsignada = null;
+            
+            // Caso 1: Si se proporciona un ID de categoria existente
+            if (idCategoria != null) {
+                Optional<Categoria> categoriaOpt = categoriaRepository.findById(idCategoria);
+                if (categoriaOpt.isPresent()) {
+                    categoriaAsignada = categoriaOpt.get();
+                } else {
+                    throw new RuntimeException("Categoría no encontrada con ID: " + idCategoria);
+                }
+            } 
+            // Caso 2: Si se proporcionan datos para crear una nueva categoria
+            else if (tipoCategoria != null && marcaCategoria != null) {
+                try {
+                    // Verificar si ya existe una categoría con ese tipo y marca
+                    Categoria categoriaExistente = categoriaRepository.findByTipoCategoria(tipoCategoria);
+                    if (categoriaExistente != null && categoriaExistente.getMarca().equals(marcaCategoria)) {
+                        categoriaAsignada = categoriaExistente;
+                    } else {
+                        // Crear nueva categoría
+                        Categoria nuevaCategoria = new Categoria();
+                        nuevaCategoria.setTipoCategoria(tipoCategoria);
+                        nuevaCategoria.setMarca(marcaCategoria);
+                        categoriaAsignada = categoriaRepository.save(nuevaCategoria);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException("Error al crear la categoría: " + e.getMessage());
+                }
+            }
+            
+            // Asignar la categoria al auto
+            if (categoriaAsignada != null) {
+                autoEntity.setCategoria(categoriaAsignada);
+                autoRepository.save(autoEntity);
+            }
         } else {
             throw new RuntimeException("Auto no encontrado con ID: " + idAuto);
         }
@@ -286,5 +336,5 @@ public class PublicacionServiceImpl implements PublicacionService {
         return dto;
 
     }
-    
+
 }

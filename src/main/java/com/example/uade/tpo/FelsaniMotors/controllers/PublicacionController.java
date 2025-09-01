@@ -158,7 +158,10 @@ public class PublicacionController {
             request.getMetodoDePago(), 
             request.getUrlImagen(), 
             request.getEsPrincipal(), 
-            request.getOrden()
+            request.getOrden(),
+            request.getIdCategoria(),
+            request.getTipoCategoria(),
+            request.getMarcaCategoria()
         );
         
         return ResponseEntity.created(URI.create("/api/publicaciones/" + nuevaPublicacion.getIdPublicacion()))

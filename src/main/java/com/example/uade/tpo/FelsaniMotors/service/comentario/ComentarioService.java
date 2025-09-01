@@ -6,11 +6,11 @@ import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
 
 public interface ComentarioService {
 
-    //Crea un nuevo comentario para una publicación
-    Comentario crearComentario(Long idPublicacion, Comentario comentario);
+    //Crea un nuevo comentario para una publicacion
+    Comentario crearComentario(Long idPublicacion, Long idUsuario, String texto);
 
     //Crea una respuesta a un comentario existente
-    Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Comentario respuesta);
+    Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Long idUsuario, String texto);
 
     //Obtiene un comentario por su ID
     Comentario buscarPorId(Long idComentario);

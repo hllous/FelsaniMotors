@@ -4,9 +4,6 @@ import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -107,14 +104,7 @@ public class FotosController {
             @PathVariable Long idPublicacion,
             @PathVariable Long idFoto) {
         try {
-            byte[] datos = fotoService.getFotoData(idFoto);
-            
-            HttpHeaders headers = new HttpHeaders();
-            
-            
-            headers.setContentType(MediaType.IMAGE_JPEG);
-            
-            return new ResponseEntity<>(datos, headers, HttpStatus.OK);
+            return fotoService.getFotoResponse(idFoto).toResponseEntity();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

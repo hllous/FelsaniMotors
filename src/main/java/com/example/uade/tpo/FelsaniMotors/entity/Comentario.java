@@ -28,9 +28,14 @@ public class Comentario {
     private Long idComentario;
 
     // N:1 con Publicacion
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne
     @JoinColumn(name = "id_publicacion", nullable = false)
     private Publicacion publicacion;
+    
+    // Relacion con Usuario
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private Usuario usuario;
 
     // Autorreferencia: comentario padre (opcional)
     @ManyToOne(fetch = FetchType.LAZY)

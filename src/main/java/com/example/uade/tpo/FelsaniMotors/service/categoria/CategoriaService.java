@@ -15,10 +15,10 @@ public interface CategoriaService {
     Optional<Categoria> getCategoriaById(Long id);
     
     // Creo una nueva categoria
-    Categoria createCategoria(String nombre, String imagen, String descripcion) throws CategoriaDuplicadaException;
+    Categoria createCategoria(String tipoCategoria, String marca) throws CategoriaDuplicadaException;
     
     // Actualizo una categoria
-    Categoria updateCategoria(Long id, String nombre, String imagen, String descripcion);
+    Categoria updateCategoria(Long id, String tipoCategoria, String marca);
     
     // Elimino categoria
     boolean deleteCategoria(Long id);

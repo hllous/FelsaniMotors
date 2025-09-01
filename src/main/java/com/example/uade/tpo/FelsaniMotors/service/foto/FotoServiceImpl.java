@@ -5,9 +5,11 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.FotoResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
@@ -59,6 +61,12 @@ public class FotoServiceImpl implements FotoService {
     public byte[] getFotoData(Long idFoto) {
         Foto foto = this.getFotoById(idFoto);
         return foto.getDatos();
+    }
+    
+    @Override
+    public FotoResponse getFotoResponse(Long idFoto) {
+        Foto foto = this.getFotoById(idFoto);
+        return new FotoResponse(foto.getDatos(), MediaType.IMAGE_JPEG);
     }
 
     @Override

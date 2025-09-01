@@ -74,11 +74,11 @@ public class CategoriaController {
         return ResponseEntity.noContent().build();
     }
 
-    // GET - Obtengo una categoria por nombre
-    @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<Categoria> getCategoriaByNombre(@PathVariable String nombre) {
+    // GET - Obtengo una categoria por tipo
+    @GetMapping("/tipo/{tipoCategoria}")
+    public ResponseEntity<Categoria> getCategoriaByTipo(@PathVariable String tipoCategoria) {
 
-        Optional<Categoria> result = categoriaService.findByNombre(nombre);
+        Optional<Categoria> result = categoriaService.findByNombre(tipoCategoria);
 
         if (result.isPresent()){
 
@@ -95,9 +95,8 @@ public class CategoriaController {
     public ResponseEntity<Object> createCategoria(@RequestBody CategoriaRequest categoriaRequest) throws CategoriaDuplicadaException {
 
         Categoria result = categoriaService.createCategoria(
-            categoriaRequest.getNombre(),
-            categoriaRequest.getImagen(),
-            categoriaRequest.getDescripcion()
+            categoriaRequest.getTipoCategoria(),
+            categoriaRequest.getMarca()
         );
 
         return ResponseEntity.created(URI.create("/categorias/" + result.getIdCategoria())).body(result);
@@ -111,9 +110,8 @@ public class CategoriaController {
 
         Categoria categoriaActualizada = categoriaService.updateCategoria(
             idCategoria,
-            categoriaRequest.getNombre(),
-            categoriaRequest.getImagen(),
-            categoriaRequest.getDescripcion()
+            categoriaRequest.getTipoCategoria(),
+            categoriaRequest.getMarca()
         );
         
         return ResponseEntity.ok(categoriaActualizada);

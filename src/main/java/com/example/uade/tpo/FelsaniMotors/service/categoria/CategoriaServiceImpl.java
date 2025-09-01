@@ -31,17 +31,16 @@ public class CategoriaServiceImpl implements CategoriaService {
     // --- Seccion POST --- //
 
     @Override
-    public Categoria createCategoria(String nombre, String imagen, String descripcion) throws CategoriaDuplicadaException {
+    public Categoria createCategoria(String tipoCategoria, String marca) throws CategoriaDuplicadaException {
 
-        Categoria categoriaExistente = categoriaRepository.findByNombre(nombre);
+        Categoria categoriaExistente = categoriaRepository.findByTipoCategoria(tipoCategoria);
         if (categoriaExistente != null) {
             throw new CategoriaDuplicadaException();
         }
         
         Categoria nuevaCategoria = new Categoria();
-        nuevaCategoria.setCategoria(nombre);
-        nuevaCategoria.setImagen(imagen);
-        nuevaCategoria.setMarca(descripcion);
+        nuevaCategoria.setTipoCategoria(tipoCategoria);
+        nuevaCategoria.setMarca(marca);
         
         return categoriaRepository.save(nuevaCategoria);
     }
@@ -49,7 +48,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     // --- Seccion PUT --- //
     
     @Override
-    public Categoria updateCategoria(Long id, String nombre, String imagen, String descripcion) {
+    public Categoria updateCategoria(Long id, String tipoCategoria, String marca) {
         Optional<Categoria> categoriaOpt = categoriaRepository.findById(id);
         
         /* Veo si la categoria existe o no
@@ -62,16 +61,14 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (categoriaOpt.isPresent()) {
             // Si la categoría existe, actualizo sus propiedades
             Categoria categoria = categoriaOpt.get();
-            categoria.setCategoria(nombre);
-            categoria.setImagen(imagen);
-            categoria.setMarca(descripcion);
+            categoria.setTipoCategoria(tipoCategoria);
+            categoria.setMarca(marca);
             return categoriaRepository.save(categoria);
         } else {
             // Si la categoría no existe, creo una nueva con los datos proporcionados
             Categoria nuevaCategoria = new Categoria();
-            nuevaCategoria.setCategoria(nombre);
-            nuevaCategoria.setImagen(imagen);
-            nuevaCategoria.setMarca(descripcion);
+            nuevaCategoria.setTipoCategoria(tipoCategoria);
+            nuevaCategoria.setMarca(marca);
             return categoriaRepository.save(nuevaCategoria);
         }
     }
@@ -95,7 +92,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     public Optional<Categoria> findByNombre(String nombre) {
-        return Optional.ofNullable(categoriaRepository.findByNombre(nombre));
+        return Optional.ofNullable(categoriaRepository.findByTipoCategoria(nombre));
     }
 
 }

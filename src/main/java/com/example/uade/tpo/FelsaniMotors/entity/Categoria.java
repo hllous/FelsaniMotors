@@ -21,11 +21,8 @@ public class Categoria {
     private Long idCategoria;
     
     @Column
-    private String categoria;
+    private String tipoCategoria;
 
     @Column
     private String marca;
-    
-    @Column
-    private String imagen;
 }

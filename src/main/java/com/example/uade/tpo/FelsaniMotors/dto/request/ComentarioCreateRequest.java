@@ -1,4 +1,4 @@
-package com.example.uade.tpo.FelsaniMotors.entity.dto;
+package com.example.uade.tpo.FelsaniMotors.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -7,4 +7,5 @@ import lombok.Data;
 public class ComentarioCreateRequest {
     @NotBlank
     private String texto;
+    private Long idUsuario;
 }

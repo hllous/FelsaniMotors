@@ -5,12 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,10 +48,11 @@ public class Auto {
     @Column
     private String motor;
 
-    @Column
-    private String Categoria;
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 
-    @OneToMany(mappedBy = "auto")
+    @OneToOne(mappedBy = "auto")
     @JsonIgnore
-    private List<Publicacion> publicaciones = new ArrayList<>();
+    private Publicacion publicacion;
 }

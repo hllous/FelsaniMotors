@@ -25,8 +25,8 @@ public class Publicacion {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
     
-    // Relación con Auto
-    @ManyToOne
+    // Relación con Auto (ahora OneToOne)
+    @OneToOne
     @JoinColumn(name = "id_auto", nullable = false)
     private Auto auto;
     

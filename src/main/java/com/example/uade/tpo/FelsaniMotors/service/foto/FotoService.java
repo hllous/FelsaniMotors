@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.FotoResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 
@@ -40,6 +41,9 @@ public interface FotoService {
     
     
     byte[] getFotoData(Long idFoto);
+    
+    // Nuevo método para obtener respuesta completa con datos de la foto
+    FotoResponse getFotoResponse(Long idFoto);
     
     
     Foto addFoto(Long idPublicacion, MultipartFile archivo, Boolean esPrincipal, Integer orden) throws IOException;

@@ -67,4 +67,18 @@ public class AutoController {
                 .created(URI.create("/autos/" + created.getIdAuto()))
                 .body(created);
     }
+    
+    // ---Seccion PUT--- //
+    @PostMapping("/{idAuto}/categoria/{idCategoria}")
+    public ResponseEntity<Auto> asignarCategoria(
+            @PathVariable Long idAuto,
+            @PathVariable Long idCategoria) {
+        
+        try {
+            Auto autoActualizado = autoService.asignarCategoria(idAuto, idCategoria);
+            return ResponseEntity.ok(autoActualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

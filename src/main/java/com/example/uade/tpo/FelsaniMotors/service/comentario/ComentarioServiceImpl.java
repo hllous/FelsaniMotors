@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
+import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioInvalidoException;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioNoEncontradoException;
 import com.example.uade.tpo.FelsaniMotors.repository.ComentarioRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
+import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
 
 @Service
 public class ComentarioServiceImpl implements ComentarioService {
@@ -21,25 +23,37 @@ public class ComentarioServiceImpl implements ComentarioService {
     private ComentarioRepository comentarioRepository;
     @Autowired
     private PublicacionRepository publicacionRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
-    public Comentario crearComentario(Long idPublicacion, Comentario comentario) {
-        if (comentario.getTexto() == null || comentario.getTexto().isBlank()) {
+    public Comentario crearComentario(Long idPublicacion, Long idUsuario, String texto) {
+
+        if (texto == null || texto.isBlank()) {
             throw new ComentarioInvalidoException("El texto del comentario es obligatorio.");
         }
-        if (comentario.getFecha() == null) {
-            comentario.setFecha(new Date());
-        }
+        
         Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
         if (publicacion.isEmpty()) {
             throw new ComentarioInvalidoException("La publicación con ID " + idPublicacion + " no existe.");
         }
+        
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if (usuario.isEmpty()) {
+            throw new ComentarioInvalidoException("El usuario con ID " + idUsuario + " no existe.");
+        }
+        
+        Comentario comentario = new Comentario();
+        comentario.setTexto(texto);
+        comentario.setFecha(new Date());
         comentario.setPublicacion(publicacion.get());
+        comentario.setUsuario(usuario.get());
+        
         return comentarioRepository.save(comentario);
     }
 
     @Override
-    public Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Comentario respuesta) {
+    public Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Long idUsuario, String texto) {
 
         Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
         if (publicacion.isEmpty()) {
@@ -51,12 +65,21 @@ public class ComentarioServiceImpl implements ComentarioService {
             throw new ComentarioNoEncontradoException(idComentarioPadre);
         }
 
-        if (respuesta.getTexto() == null || respuesta.getTexto().isBlank()) {
+        if (texto == null || texto.isBlank()) {
             throw new ComentarioInvalidoException("El texto de la respuesta es obligatorio.");
         }
 
+        Optional<Usuario> usuario = usuarioRepository.findById(idUsuario);
+        if (usuario.isEmpty()) {
+            throw new ComentarioInvalidoException("El usuario con ID " + idUsuario + " no existe.");
+        }
+
+        Comentario respuesta = new Comentario();
+        respuesta.setTexto(texto);
+        respuesta.setFecha(new Date());
         respuesta.setPublicacion(publicacion.get());
         respuesta.setPadre(padre.get());
+        respuesta.setUsuario(usuario.get());
 
         if (respuesta.getFecha() == null) {
             respuesta.setFecha(new Date());
