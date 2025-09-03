@@ -6,26 +6,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FotoResponse {
-    private byte[] datos;
-    private MediaType mediaType;
+    private Long idFoto;
+    private String base64Image;
+    private Boolean esPrincipal;
+    private Integer orden;
     
-    public ResponseEntity<byte[]> toResponseEntity() {
-        
+    public ResponseEntity<FotoResponse> toResponseEntity() {
         HttpHeaders headers = new HttpHeaders();
-
-        if (mediaType != null) {
-            headers.setContentType(mediaType);
-        } else {
-            headers.setContentType(MediaType.IMAGE_JPEG);
-        }
+        headers.setContentType(MediaType.APPLICATION_JSON);
         
-        return new ResponseEntity<>(datos, headers, HttpStatus.OK);
+        return new ResponseEntity<>(this, headers, HttpStatus.OK);
     }
 }

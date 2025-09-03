@@ -34,8 +34,7 @@ public interface PublicacionService {
     
     // Creo una nueva publicacion
     PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
-                                         String ubicacion, float precio, String metodoDePago,
-                                         String urlImagen, Boolean esPrincipal, Integer orden);
+                                         String ubicacion, float precio, String metodoDePago);
     
     // --- Seccion PUT --- //
     

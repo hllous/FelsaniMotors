@@ -1,62 +1,62 @@
 package com.example.uade.tpo.FelsaniMotors.service.foto;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.example.uade.tpo.FelsaniMotors.dto.request.FotoUploadRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.response.FotoResponse;
+import com.example.uade.tpo.FelsaniMotors.dto.response.ImageResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 
 /*
 GET:
 getFotosByPublicacion: Devuelve las fotos de la publicación en formato paginado.
-getFotos: Devuelve las fotos de la publi usando findByIdPublicacion
-getFotosById: busca la foto por ID usando getFotoByID. Si existe devuelve 200 OK con la entidad Foto, sino un 404.
-getFotoImage: Devuelve los bytes de la imagen, si no existe devuelve un 404.
+getFotoById: busca la foto por ID. Si existe la devuelve, sino lanza excepción.
+getFotoResponse: Devuelve la foto en formato base64 para mostrar en el frontend.
+getImageResponse: Devuelve la foto en formato ImageResponse (id + base64).
+getImagesFromPublicacion: Devuelve todas las fotos de una publicación en formato ImageResponse.
 
 POST:
-uploadFoto: Permite subir una nueva foto a una publicación. Lo guarda siempre como binario en la bd.
-addFoto: Crea una foto nueva en la publicación, si la marcás como principal desmarca la anterior.
+addFoto: Crea una foto nueva en la publicación, si está marcada como principal desmarca la anterior.
+createImage: Crea una imagen independiente (sin asociación a publicacion).
 
 DELETE:
 deleteFoto: Borra la foto por ID.
 
 PUT:
-setMainFoto: Marca esa foto como la principal de la publicación, desmarca la principal anterior (si existe).
-updateFotoOrder: Actualiza el orden de la foto en la publicación y devuelve la foto actualizada.
-
-
- */
+setMainFoto: Marca esa foto como la principal de la publicación, desmarca la principal anterior.
+updateFotoOrder: Actualiza el orden de la foto en la publicación.
+*/
 
 
 public interface FotoService {
     
     Page<Foto> getFotosByPublicacion(Long idPublicacion, Pageable pageable);
     
-    
     Foto getFotoById(Long idFoto);
     
+    FotoResponse getFotoResponse(Long idFoto) throws SQLException;
     
-    byte[] getFotoData(Long idFoto);
+    // Nuevo método para obtener una imagen en formato ImageResponse
+    ImageResponse getImageResponse(Long idFoto) throws SQLException, IOException;
     
-    // Nuevo método para obtener respuesta completa con datos de la foto
-    FotoResponse getFotoResponse(Long idFoto);
+    // Nuevo método para obtener todas las imágenes de una publicación en formato ImageResponse
+    List<ImageResponse> getImagesFromPublicacion(Long idPublicacion) throws SQLException, IOException;
     
+    Foto addFoto(Long idPublicacion, FotoUploadRequest request) throws IOException, SQLException;
     
-    Foto addFoto(Long idPublicacion, MultipartFile archivo, Boolean esPrincipal, Integer orden) throws IOException;
-    
+    Foto createImage(Foto foto);
     
     void deleteFoto(Long idFoto);
     
-    
     Foto setMainFoto(Long fotoId);
     
-    
     Foto getMainFoto(Publicacion publicacion);
-    
     
     Foto updateFotoOrder(Long idFoto, Integer orden);
 }

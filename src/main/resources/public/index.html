@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felsani Motors API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="mb-0">Felsani Motors API</h1>
+                    </div>
+                    <div class="card-body">
+                        <h2>Ejemplos disponibles:</h2>
+                        <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <a href="/foto-ejemplo.html" class="btn btn-outline-primary w-100">Gestión de Fotos</a>
+                                <small class="text-muted d-block mt-2">
+                                    Ejemplo de subida, visualización y eliminación de fotos utilizando multipart/form-data y Base64
+                                </small>
+                            </li>
+                        </ul>
+                        
+                        <h3 class="mt-4">Endpoints API REST disponibles:</h3>
+                        <div class="list-group mt-3">
+                            <a href="/api/publicaciones" class="list-group-item list-group-item-action">
+                                <strong>GET /api/publicaciones</strong> - Listar todas las publicaciones
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <strong>GET /api/publicaciones/{id}</strong> - Obtener una publicación por ID
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <strong>POST /api/publicaciones</strong> - Crear una nueva publicación
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <strong>GET /api/publicaciones/{id}/fotos</strong> - Obtener fotos de una publicación
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <strong>POST /api/publicaciones/{id}/fotos</strong> - Subir una foto a una publicación
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

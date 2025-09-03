@@ -102,10 +102,7 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     @Override
     public PublicacionResponse createPublicacion(Long idUsuario, Long idAuto, String titulo, String descripcion, 
-                                                String ubicacion, float precio, String metodoDePago,
-                                                String urlImagen, Boolean esPrincipal, Integer orden) {
-
-
+                                                String ubicacion, float precio, String metodoDePago) {
         Publicacion publicacion = new Publicacion();
         
         // Asigno el usuario
@@ -119,7 +116,6 @@ public class PublicacionServiceImpl implements PublicacionService {
         // Asigno el auto
         Optional<Auto> auto = autoRepository.findById(idAuto);
         if (auto.isPresent()) {
-
             // Verifico que el auto no este ya en uso en otra publicación activa
             if (auto.get().getPublicacion() != null) {
                 throw new RuntimeException("El auto con ID: " + idAuto + " ya está en uso en otra publicación.");
@@ -142,25 +138,6 @@ public class PublicacionServiceImpl implements PublicacionService {
         
         // Guardo la publicacion
         Publicacion savedPublicacion = publicacionRepository.save(publicacion);
-        
-        // Manejar la foto si existe
-        if (urlImagen != null && !urlImagen.isEmpty()) {
-            Foto foto = new Foto();
-            foto.setPublicacion(savedPublicacion);
-            
-            if (esPrincipal != null) {
-                foto.setEsPrincipal(esPrincipal);
-            } else {
-                foto.setEsPrincipal(true);
-            }
-            
-            if (orden != null) {
-                foto.setOrden(orden);
-            } else {
-                foto.setOrden(0);
-            }
-            fotoRepository.save(foto);
-        }
         
         // Convertir a DTO para la respuesta
         return convertToDto(savedPublicacion);
@@ -286,8 +263,8 @@ public class PublicacionServiceImpl implements PublicacionService {
 
         if (fotoPrincipal.isPresent()) {
             dto.setIdFotoPrincipal(fotoPrincipal.get().getIdFoto());
-            dto.setImagenPrincipal("/publicaciones/" + publicacion.getIdPublicacion() + "/fotos/" + 
-                                                        fotoPrincipal.get().getIdFoto() + "/imagen");
+            dto.setImagenPrincipal("/api/publicaciones/" + publicacion.getIdPublicacion() + 
+                                  "/fotos/" + fotoPrincipal.get().getIdFoto() + "?includeImage=true");
         }
         
         return dto;

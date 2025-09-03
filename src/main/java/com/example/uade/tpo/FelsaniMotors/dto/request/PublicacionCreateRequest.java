@@ -18,9 +18,4 @@ public class PublicacionCreateRequest {
     private String ubicacion;
     private float precio;
     private String metodoDePago;
-    
-    // Para la foto principal (opcional)
-    private String urlImagen;
-    private Boolean esPrincipal;
-    private Integer orden;
 }

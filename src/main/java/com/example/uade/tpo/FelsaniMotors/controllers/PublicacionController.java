@@ -31,6 +31,8 @@ import java.util.Optional;
  * POST
  * 
  * - createPublicacion = Crea una publicacion nueva
+ *   Las fotos deben subirse despues de crear la publicacion usando:
+ *   POST /api/publicaciones/{idPublicacion}/fotos
  * 
  * PUT
  * 
@@ -155,10 +157,7 @@ public class PublicacionController {
             request.getDescripcion(), 
             request.getUbicacion(), 
             request.getPrecio(), 
-            request.getMetodoDePago(), 
-            request.getUrlImagen(), 
-            request.getEsPrincipal(), 
-            request.getOrden()
+            request.getMetodoDePago()
         );
         
         return ResponseEntity.created(URI.create("/api/publicaciones/" + nuevaPublicacion.getIdPublicacion()))
