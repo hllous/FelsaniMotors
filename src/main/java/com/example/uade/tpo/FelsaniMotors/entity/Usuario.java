@@ -1,15 +1,26 @@
 package com.example.uade.tpo.FelsaniMotors.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "usuarios")
-public class Usuario {
+public class Usuario implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,12 +48,47 @@ public class Usuario {
     @Column(name = "activo")
     private Boolean activo = true;
     
-    // Relación con las publicaciones del usuario
+    // Relacion con las publicaciones del usuario
     @OneToMany(mappedBy = "usuario")
     private List<Publicacion> publicaciones = new ArrayList<>();
     
     // Relacion con los comentarios del usuario
     @OneToMany(mappedBy = "usuario")
     private List<Comentario> comentarios = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return contrasena;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+    
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Las cuentas no expiran
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return activo; // La cuenta está desbloqueada si está activa
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Las credenciales no expiran
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return activo; // El usuario está habilitado si está activo
+    }
 }
 
