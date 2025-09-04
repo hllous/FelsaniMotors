@@ -32,6 +32,8 @@ public class SecurityConfig {
                                 
                                 // Endpoints de autenticacion
                                 .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                                 .requestMatchers("/error/**").permitAll()
                                 
                                 // Publicaciones - lectura publica, escritura autenticada

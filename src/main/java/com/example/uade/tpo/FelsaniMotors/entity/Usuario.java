@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Builder
+@Builder(builderMethodName = "usuarioBuilder")
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "usuarios")
@@ -46,7 +46,7 @@ public class Usuario implements UserDetails{
     private Role rol = Role.USER; // Por defecto, todos los usuarios son USER
     
     @Column(name = "activo")
-    private Boolean activo = true;
+    private Boolean activo;
     
     // Relacion con las publicaciones del usuario
     @OneToMany(mappedBy = "usuario")
@@ -89,6 +89,19 @@ public class Usuario implements UserDetails{
     @Override
     public boolean isEnabled() {
         return activo; // El usuario está habilitado si está activo
+    }
+
+    public static class UsuarioBuilder {
+        public UsuarioBuilder activo(Boolean activo) {
+            this.activo = (activo != null) ? activo : true;
+            return this;
+        }
+        public Usuario build() {
+            if (this.activo == null) {
+                this.activo = true;
+            }
+            return new Usuario(idUsuario, email, contrasena, nombre, apellido, telefono, rol, activo, publicaciones, comentarios);
+        }
     }
 }
 

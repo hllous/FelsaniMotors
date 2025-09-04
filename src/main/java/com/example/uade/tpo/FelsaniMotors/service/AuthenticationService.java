@@ -25,12 +25,14 @@ public class AuthenticationService {
         private final AuthenticationManager authenticationManager;
 
         public AuthenticationResponse register(RegisterRequest request) {
-                var user = Usuario.builder()
+                var user = Usuario.usuarioBuilder()
                                 .nombre(request.getFirstname())
                                 .apellido(request.getLastname())
                                 .email(request.getEmail())
                                 .contrasena(passwordEncoder.encode(request.getPassword()))
                                 .rol(request.getRole())
+                                .telefono(request.getTelefono())
+                                .activo(true)
                                 .build();
 
                 repository.save(user);
