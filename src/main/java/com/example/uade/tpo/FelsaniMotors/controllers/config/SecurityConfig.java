@@ -31,6 +31,11 @@ public class SecurityConfig {
                         .authorizeHttpRequests(req -> req
                                 
                                 // Endpoints de autenticacion
+                                // Permitir acceso a recursos estáticos
+                                .requestMatchers("/", "/index.html", "/foto-ejemplo.html", "/*.html", "/css/**", "/js/**", "/images/**").permitAll()
+                                .requestMatchers("/public/**").permitAll()
+                                
+                                // Endpoints de autenticacion
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
