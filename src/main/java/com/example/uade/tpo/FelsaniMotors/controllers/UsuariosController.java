@@ -1,6 +1,7 @@
 package com.example.uade.tpo.FelsaniMotors.controllers;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class UsuariosController {
     // --- Métodos GET ---
     
     @GetMapping
-    public ResponseEntity<Page<UsuarioResponse>> getUsuarios(
+    public ResponseEntity<List<UsuarioResponse>> getUsuarios(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         
@@ -47,7 +48,8 @@ public class UsuariosController {
             pageRequest = PageRequest.of(page, size);
         }
         
-        Page<UsuarioResponse> usuarios = usuarioService.getUsuarios(pageRequest);
+        Page<UsuarioResponse> usuariosPage = usuarioService.getUsuarios(pageRequest);
+        List<UsuarioResponse> usuarios = usuariosPage.getContent();
         
         if (usuarios.isEmpty()) {
             return ResponseEntity.noContent().build();

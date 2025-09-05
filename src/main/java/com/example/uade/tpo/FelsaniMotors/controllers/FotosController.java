@@ -3,8 +3,10 @@ package com.example.uade.tpo.FelsaniMotors.controllers;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -62,14 +64,20 @@ public class FotosController {
         }
         
         // Si no, devolvemos solo los metadatos (paginados si se especifica)
+        PageRequest pageRequest;
         if (page == null || size == null) {
-            return ResponseEntity.ok(
-                fotoService.getFotosByPublicacion(idPublicacion, PageRequest.of(0, Integer.MAX_VALUE))
-            );
+            pageRequest = PageRequest.of(0, Integer.MAX_VALUE);
+        } else {
+            pageRequest = PageRequest.of(page, size);
         }
-        return ResponseEntity.ok(
-            fotoService.getFotosByPublicacion(idPublicacion, PageRequest.of(page, size))
-        );
+        
+        Page<Foto> fotosPage = fotoService.getFotosByPublicacion(idPublicacion, pageRequest);
+        List<Foto> fotos = fotosPage.getContent();
+        
+        if (fotos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(fotos);
     }
 
     @PostMapping(value = "/api/publicaciones/{idPublicacion}/fotos", consumes = "multipart/form-data")

@@ -58,7 +58,7 @@ public class PublicacionController {
     // --- Seccion GET --- //
     
     @GetMapping
-    public ResponseEntity<Page<PublicacionResponse>> getAllPublicaciones(
+    public ResponseEntity<List<PublicacionResponse>> getAllPublicaciones(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 
@@ -68,7 +68,8 @@ public class PublicacionController {
         } else {
             pageable = PageRequest.of(page, size);
         }
-        Page<PublicacionResponse> publicaciones = publicacionService.getAllPublicaciones(pageable);
+        Page<PublicacionResponse> publicacionesPage = publicacionService.getAllPublicaciones(pageable);
+        List<PublicacionResponse> publicaciones = publicacionesPage.getContent();
 
         if (publicaciones.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -100,7 +101,7 @@ public class PublicacionController {
     }
     
     @GetMapping("/buscar")
-    public ResponseEntity<Page<PublicacionResponse>> buscarPublicaciones(
+    public ResponseEntity<List<PublicacionResponse>> buscarPublicaciones(
             @RequestParam String busqueda,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
@@ -112,7 +113,8 @@ public class PublicacionController {
             pageable = PageRequest.of(page, size);
         }
         
-        Page<PublicacionResponse> publicaciones = publicacionService.buscarPublicaciones(busqueda, pageable);
+        Page<PublicacionResponse> publicacionesPage = publicacionService.buscarPublicaciones(busqueda, pageable);
+        List<PublicacionResponse> publicaciones = publicacionesPage.getContent();
 
         if (publicaciones.isEmpty()) {
             return ResponseEntity.noContent().build();
