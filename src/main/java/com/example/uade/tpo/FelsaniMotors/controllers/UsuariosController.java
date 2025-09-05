@@ -66,7 +66,7 @@ public class UsuariosController {
         }
     }
 
-    // --- Métodos POST ---
+    // --- Metodos POST ---
     
     @PostMapping
     public ResponseEntity<UsuarioResponse> createUsuario(@RequestBody UsuarioCreateRequest request)
@@ -79,7 +79,7 @@ public class UsuariosController {
                 .body(resultado);
     }
 
-    // --- Métodos PUT ---
+    // --- Metodos PUT ---
     
     @PutMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponse> updateUsuario(
