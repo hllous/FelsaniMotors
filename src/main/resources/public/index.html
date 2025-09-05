@@ -5,11 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Felsani Motors API</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .image-container {
+            margin: 20px 0;
+        }
+        .image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .gallery-item {
+            flex: 0 0 calc(33.33% - 15px);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .gallery-caption {
+            padding: 10px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .gallery-item {
+                flex: 0 0 calc(50% - 15px);
+            }
+        }
+        @media (max-width: 576px) {
+            .gallery-item {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <h1 class="mb-0">Felsani Motors API</h1>
@@ -24,6 +69,29 @@
                                 </small>
                             </li>
                         </ul>
+
+                        <!-- Nueva sección para visualizar imágenes -->
+                        <h2 class="mt-4">Visualizador de Imágenes</h2>
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                Ver imágenes de una publicación
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="viewPublicacionId" class="form-label">ID de Publicación</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="viewPublicacionId">
+                                        <button id="btnVerImagenes" class="btn btn-primary">Ver Imágenes</button>
+                                    </div>
+                                </div>
+                                <div id="imageGallery" class="gallery">
+                                    <!-- Aquí se mostrarán las imágenes cargadas -->
+                                </div>
+                                <div id="imageGalleryMessage" class="alert alert-info mt-3 d-none">
+                                    No hay imágenes para mostrar
+                                </div>
+                            </div>
+                        </div>
                         
                         <h3 class="mt-4">Endpoints API REST disponibles:</h3>
                         <div class="list-group mt-3">
@@ -48,5 +116,79 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejar la visualización de imágenes
+            document.getElementById('btnVerImagenes').addEventListener('click', function() {
+                const publicacionId = document.getElementById('viewPublicacionId').value;
+                if (!publicacionId) {
+                    alert('Por favor ingrese un ID de publicación');
+                    return;
+                }
+                cargarImagenes(publicacionId);
+            });
+
+            function cargarImagenes(publicacionId) {
+                // Mostrar indicador de carga
+                const gallery = document.getElementById('imageGallery');
+                const message = document.getElementById('imageGalleryMessage');
+                gallery.innerHTML = '<div class="text-center w-100"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
+                message.classList.add('d-none');
+
+                // Hacer petición para obtener las imágenes
+                fetch(`/api/publicaciones/${publicacionId}/fotos-contenido`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se encontraron imágenes para esta publicación');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        gallery.innerHTML = '';
+                        
+                        if (!data || data.length === 0) {
+                            message.classList.remove('d-none');
+                            return;
+                        }
+                        
+                        // Mostrar las imágenes en la galería
+                        data.forEach((imagen, index) => {
+                            const item = document.createElement('div');
+                            item.className = 'gallery-item';
+                            
+                            const img = document.createElement('img');
+                            img.src = `data:image/jpeg;base64,${imagen.file}`;
+                            img.alt = `Imagen ${index + 1}`;
+                            img.className = 'gallery-image';
+                            
+                            const caption = document.createElement('div');
+                            caption.className = 'gallery-caption';
+                            caption.textContent = `ID: ${imagen.id}`;
+                            
+                            item.appendChild(img);
+                            item.appendChild(caption);
+                            gallery.appendChild(item);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        gallery.innerHTML = '';
+                        message.textContent = `Error: ${error.message}`;
+                        message.classList.remove('d-none');
+                        message.classList.remove('alert-info');
+                        message.classList.add('alert-danger');
+                    });
+            }
+
+            // Si hay un ID en la URL, cargar automáticamente las imágenes
+            const urlParams = new URLSearchParams(window.location.search);
+            const publicacionId = urlParams.get('id');
+            if (publicacionId) {
+                document.getElementById('viewPublicacionId').value = publicacionId;
+                cargarImagenes(publicacionId);
+            }
+        });
+    </script>
 </body>
 </html>

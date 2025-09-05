@@ -9,10 +9,13 @@ import com.example.uade.tpo.FelsaniMotors.repository.AutoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
+import com.example.uade.tpo.FelsaniMotors.service.AuthenticationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +37,9 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     @Autowired
     private AutoRepository autoRepository;
+    
+    @Autowired
+    private AuthenticationService authService;
 
     // --- Seccion GET --- //
     
@@ -146,85 +152,81 @@ public class PublicacionServiceImpl implements PublicacionService {
     // --- Seccion PUT --- //
     
     @Override
-    public PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
-                                                String ubicacion, float precio, String metodoDePago, Long idUsuario) {
+    public PublicacionResponse updatePublicacion(
+            Long idPublicacion, 
+            String titulo, 
+            String descripcion, 
+            String ubicacion, 
+            float precio, 
+            String metodoDePago, 
+            Authentication authentication) {
 
         Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
-        if (publicacionOpt.isPresent()) {
-            Publicacion publicacion = publicacionOpt.get();
-            
-            // Verifico si el usuario es el creador de la publicacion
-
-            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
-                throw new RuntimeException("No tienes permiso para actualizar esta publicacion");
-            }
-            
-            // Actualizo parametros
-            publicacion.setTitulo(titulo);
-            publicacion.setDescripcion(descripcion);
-            publicacion.setUbicacion(ubicacion);
-            publicacion.setPrecio(precio);
-            publicacion.setMetodoDePago(metodoDePago);
-            
-            Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
-
-            return convertToDto(updatedPublicacion);
-
-        } else {
-            throw new RuntimeException("Publicacion no encontrada con ID: " + idPublicacion);
+        if (publicacionOpt.isEmpty()) {
+            throw new RuntimeException("Publicación no encontrada con ID: " + idPublicacion);
         }
+        
+        Publicacion publicacion = publicacionOpt.get();
+        
+        // Verificar si el usuario actual tiene permiso para actualizar esta publicacion
+        if (!authService.isOwnerOrAdmin(authentication, publicacion.getUsuario().getIdUsuario())) {
+            throw new AccessDeniedException("No tienes permiso para actualizar esta publicacion");
+        }
+        
+        // Actualizo parametros
+        publicacion.setTitulo(titulo);
+        publicacion.setDescripcion(descripcion);
+        publicacion.setUbicacion(ubicacion);
+        publicacion.setPrecio(precio);
+        publicacion.setMetodoDePago(metodoDePago);
+        
+        Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
+
+        return convertToDto(updatedPublicacion);
     }
 
     @Override
-    public PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario) {
-
+    public PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Authentication authentication) {
         Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
-        if (publicacionOpt.isPresent()) {
-            Publicacion publicacion = publicacionOpt.get();
-            
-            // Verifico si el usuario es el creador de la publicacion
-
-            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
-                throw new RuntimeException("No tienes permiso para actualizar el estado de esta publicacion");
-            }
-            
-            publicacion.setEstado(estado);
-            
-            Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
-
-            return convertToDto(updatedPublicacion);
-
-        } else {
-            throw new RuntimeException("Publicacion no encontrada con ID: " + idPublicacion);
+        if (publicacionOpt.isEmpty()) {
+            throw new RuntimeException("Publicación no encontrada con ID: " + idPublicacion);
         }
+        
+        Publicacion publicacion = publicacionOpt.get();
+        
+        // Verificar si el usuario actual tiene permiso para actualizar esta publicacion
+        if (!authService.isOwnerOrAdmin(authentication, publicacion.getUsuario().getIdUsuario())) {
+            throw new AccessDeniedException("No tienes permiso para actualizar el estado de esta publicacion");
+        }
+        
+        publicacion.setEstado(estado);
+        
+        Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
+
+        return convertToDto(updatedPublicacion);
     }
 
     // --- Seccion DELETE --- //
     
     @Override
-    public boolean deletePublicacion(Long idPublicacion, Long idUsuario) {
-
+    public boolean deletePublicacion(Long idPublicacion, Authentication authentication) {
         Optional<Publicacion> publicacionOpt = publicacionRepository.findById(idPublicacion);
         
-        if (publicacionOpt.isPresent()) {
-
-            Publicacion publicacion = publicacionOpt.get();
-            
-            // Verifico si el usuario es el creador de la publicacion
-            if (!publicacion.getUsuario().getIdUsuario().equals(idUsuario)) {
-                throw new RuntimeException("No tienes permiso para eliminar esta publicacion");
-            }
-            
-            publicacionRepository.deleteById(idPublicacion);
-
-            return true;
-        }else{
-
+        if (publicacionOpt.isEmpty()) {
             return false;
-
         }
+
+        Publicacion publicacion = publicacionOpt.get();
+        
+        // Verificar si el usuario actual tiene permiso para eliminar esta publicacion
+        if (!authService.isOwnerOrAdmin(authentication, publicacion.getUsuario().getIdUsuario())) {
+            throw new AccessDeniedException("No tienes permiso para eliminar esta publicación");
+        }
+        
+        publicacionRepository.deleteById(idPublicacion);
+        return true;
     }
     
     // --- Metodos de conversion --- //

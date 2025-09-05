@@ -2,6 +2,7 @@ package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 
@@ -40,13 +41,13 @@ public interface PublicacionService {
     
     //Actualizo una publicacion existente
     PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
-                                         String ubicacion, float precio, String metodoDePago, Long idUsuario);
+                                         String ubicacion, float precio, String metodoDePago, Authentication authentication);
     
     // Actualizo solo el estado de una publicacion
-    PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Long idUsuario);
+    PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Authentication authentication);
 
     // --- Seccion DELETE --- //
     
     // Elimino una publicacion
-    boolean deletePublicacion(Long idPublicacion, Long idUsuario);
+    boolean deletePublicacion(Long idPublicacion, Authentication authentication);
 }

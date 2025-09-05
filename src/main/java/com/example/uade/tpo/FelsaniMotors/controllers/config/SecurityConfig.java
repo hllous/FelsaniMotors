@@ -47,9 +47,9 @@ public class SecurityConfig {
                                 // Usuarios - solo administradores pueden ver todos los usuarios
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Registro público
+                                .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Registro publico
                                 .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAuthority(Role.ADMIN.name())
                                 
                                 // Comentarios - lectura publica, escritura autenticada
                                 .requestMatchers(HttpMethod.GET, "/api/publicaciones/*/comentarios", "/api/publicaciones/*/comentarios/**").permitAll()

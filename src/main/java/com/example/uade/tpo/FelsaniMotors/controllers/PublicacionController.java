@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -169,7 +172,8 @@ public class PublicacionController {
     @PutMapping("/{idPublicacion}")
     public ResponseEntity<PublicacionResponse> updatePublicacion(
             @PathVariable Long idPublicacion,
-            @RequestBody PublicacionUpdateRequest request) {
+            @RequestBody PublicacionUpdateRequest request,
+            Authentication authentication) {
         
         try {
             PublicacionResponse publicacionActualizada = publicacionService.updatePublicacion(
@@ -179,25 +183,30 @@ public class PublicacionController {
                 request.getUbicacion(), 
                 request.getPrecio(), 
                 request.getMetodoDePago(), 
-                request.getIdUsuario()
+                authentication
             );
             return ResponseEntity.ok(publicacionActualizada);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
     
     @PutMapping("/{idPublicacion}/estado")
     public ResponseEntity<PublicacionResponse> updateEstadoPublicacion(
             @PathVariable Long idPublicacion,
-            @RequestBody PublicacionEstadoRequest request) {
+            @RequestBody PublicacionEstadoRequest request,
+            Authentication authentication) {
         
         try {
             PublicacionResponse publicacionActualizada = publicacionService.updateEstadoPublicacion(
-                idPublicacion, request.getEstado(), request.getIdUsuario());
+                idPublicacion, request.getEstado(), authentication);
             return ResponseEntity.ok(publicacionActualizada);
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
     
@@ -206,15 +215,18 @@ public class PublicacionController {
     @DeleteMapping("/{idPublicacion}")
     public ResponseEntity<Void> deletePublicacion(
             @PathVariable Long idPublicacion,
-            @RequestParam Long idUsuario) {
+            Authentication authentication) {
         
-        boolean eliminado = publicacionService.deletePublicacion(idPublicacion, idUsuario);
+        try {
+            boolean eliminado = publicacionService.deletePublicacion(idPublicacion, authentication);
             
-        if (eliminado) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+            if (eliminado) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
     }
 }

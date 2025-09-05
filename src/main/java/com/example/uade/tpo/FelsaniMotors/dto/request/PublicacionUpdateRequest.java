@@ -14,5 +14,4 @@ public class PublicacionUpdateRequest {
     private String ubicacion;
     private float precio;
     private String metodoDePago;
-    private Long idUsuario;
 }
