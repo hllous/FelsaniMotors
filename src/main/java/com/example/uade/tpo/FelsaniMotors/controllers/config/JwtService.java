@@ -30,7 +30,7 @@ public class JwtService {
             long expiration) {
         return Jwts
                 .builder()
-                .subject(userDetails.getUsername()) // prueba@hotmail.com
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .claim("Gisele", 1234567)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
@@ -57,12 +57,22 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parser()
-                .verifyWith(getSecretKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+
+        // --- MODIFICACION DEL CODIGO DE LA PROFE --- //
+
+        try {
+            return Jwts
+                    .parser()
+                    .verifyWith(getSecretKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Token JWT inválido");
+        }
+
+        // --- MODIFICACION DEL CODIGO DE LA PROFE --- //
+        
     }
 
     private SecretKey getSecretKey() {

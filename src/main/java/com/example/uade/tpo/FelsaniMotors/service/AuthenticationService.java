@@ -36,6 +36,7 @@ public class AuthenticationService {
                                 .email(request.getEmail())
                                 .contrasena(passwordEncoder.encode(request.getPassword()))
                                 .rol(request.getRole())
+                                .telefono(request.getTelefono())
                                 .activo(true)
                                 .build();
 
