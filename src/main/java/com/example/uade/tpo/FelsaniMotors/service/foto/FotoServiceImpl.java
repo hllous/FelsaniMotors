@@ -86,7 +86,7 @@ public class FotoServiceImpl implements FotoService {
         
         Publicacion publicacion = null;
         
-        // Si tenemos idPublicacion, buscamos la publicación y la asociamos
+        // Si tenemos idPublicacion, buscamos la publicacion y la asociamos
         if (idPublicacion != null) {
             publicacion = publicacionRepository.findById(idPublicacion)
                     .orElseThrow(() -> new EntityNotFoundException("Publicación no encontrada con ID: " + idPublicacion));
@@ -176,7 +176,6 @@ public class FotoServiceImpl implements FotoService {
                         .encodeToString(foto.getImage().getBytes(1, (int) foto.getImage().length()));
                 response.add(ImageResponse.builder().id(foto.getIdFoto()).file(encodedString).build());
             } catch (Exception e) {
-                // Si hay algún problema con una foto, continuamos con las demás
                 continue;
             }
         }

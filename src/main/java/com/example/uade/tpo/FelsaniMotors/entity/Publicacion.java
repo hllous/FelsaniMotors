@@ -62,7 +62,7 @@ public class Publicacion {
     @OneToMany(mappedBy = "publicacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios = new ArrayList<>();
     
-    // Métodos helper para manejar la relación bidireccional con Foto
+    // Metodos helper para manejar la relación bidireccional con Foto
     public void addFoto(Foto foto) {
         fotos.add(foto);
         foto.setPublicacion(this);

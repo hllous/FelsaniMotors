@@ -74,6 +74,4 @@ public class AutoController {
                 .created(URI.create("/autos/" + created.getIdAuto()))
                 .body(created);
     }
-    
-    // ---Seccion PUT--- //
 }

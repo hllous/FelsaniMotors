@@ -63,7 +63,7 @@ public class FotosController {
             return ResponseEntity.ok(fotoService.getImagesFromPublicacion(idPublicacion));
         }
         
-        // Si no, devolvemos solo los metadatos (paginados si se especifica)
+        // Si no, devolvemos solo los metadatos
         PageRequest pageRequest;
         if (page == null || size == null) {
             pageRequest = PageRequest.of(0, Integer.MAX_VALUE);
@@ -101,14 +101,12 @@ public class FotosController {
             @PathVariable Long idFoto,
             @RequestParam(required = false, defaultValue = "false") Boolean includeImage) {
         try {
-            // Si se pide incluir la imagen, devolvemos el formato FotoResponse con la imagen en base64
 
             if (includeImage) {
                 FotoResponse response = fotoService.getFotoResponse(idFoto);
                 return ResponseEntity.ok(response);
             }
             
-            // Si no, devolvemos solo los metadatos
             Foto foto = fotoService.getFotoById(idFoto);
             return ResponseEntity.ok(foto);
         } catch (SQLException e) {

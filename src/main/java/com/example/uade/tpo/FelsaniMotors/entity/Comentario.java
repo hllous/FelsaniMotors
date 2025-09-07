@@ -27,7 +27,6 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComentario;
 
-    // N:1 con Publicacion
     @ManyToOne
     @JoinColumn(name = "id_publicacion", nullable = false)
     private Publicacion publicacion;
@@ -37,12 +36,11 @@ public class Comentario {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    // Autorreferencia: comentario padre (opcional)
+    // Comentario padre 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_comentario_padre")
     private Comentario padre;
 
-    // Hijos/inverso (opcional activar)
     @OneToMany(mappedBy = "padre", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> respuestas;
 

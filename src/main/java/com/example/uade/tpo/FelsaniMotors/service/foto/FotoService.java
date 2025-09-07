@@ -42,10 +42,8 @@ public interface FotoService {
     
     FotoResponse getFotoResponse(Long idFoto) throws SQLException;
     
-    // Nuevo método para obtener una imagen en formato ImageResponse
     ImageResponse getImageResponse(Long idFoto) throws SQLException, IOException;
     
-    // Nuevo método para obtener todas las imágenes de una publicación en formato ImageResponse
     List<ImageResponse> getImagesFromPublicacion(Long idPublicacion) throws SQLException, IOException;
     
     Foto addFoto(Long idPublicacion, FotoUploadRequest request) throws IOException, SQLException;
