@@ -70,25 +70,5 @@ public class Usuario implements UserDetails{
     public String getUsername() {
         return email;
     }
-    
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // Las cuentas no expiran
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return activo; // La cuenta está desbloqueada si está activa
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; // Las credenciales no expiran
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return activo; // El usuario está habilitado si está activo
-    }
 }
 

@@ -34,6 +34,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/error/**").permitAll()
                                 
+                                // Acceso a archivos html
+                                .requestMatchers("/", "/*.html", "/index.html", "/public/**", "/*.js", "/*.css").permitAll()
+                                
                                 // Publicaciones - lectura publica, escritura autenticada
                                 .requestMatchers(HttpMethod.GET, "/api/publicaciones", "/api/publicaciones/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/publicaciones").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())

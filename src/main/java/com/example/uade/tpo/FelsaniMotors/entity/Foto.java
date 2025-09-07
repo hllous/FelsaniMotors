@@ -29,7 +29,7 @@ public class Foto {
     
     @Lob
     @JsonIgnore
-    private Blob image; // Cambiado de 'imagen' a 'image' para seguir el ejemplo
+    private Blob image;
 
     @Builder.Default
     private Boolean esPrincipal = false;
