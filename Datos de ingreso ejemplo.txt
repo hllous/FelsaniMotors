@@ -1,0 +1,388 @@
+// ---------------------------------//
+// ------------ USUARIOS -----------//
+// ---------------------------------//
+
+registrar http://localhost:4002/api/v1/auth/register
+authenticate http://localhost:4002/api/v1/auth/authenticate
+borrar http://localhost:4002/api/usuarios/{idUsuario}
+get http://localhost:4002/api/usuarios/{idUsuario}
+
+{
+  "firstname": "Agustín",
+  "lastname": "López",
+  "email": "agustin.lopez@gmail.com",
+  "password": "agus2024",
+  "role": "USER",
+  "telefono": 1167890123
+}
+
+{
+  "email": "agustin.lopez@gmail.com",
+  "password": "agus2024"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZ3VzdGluLmxvcGV6QGdtYWlsLmNvbSIsImlhdCI6MTc1NzAwODQ4MiwiR2lzZWxlIjoxMjM0NTY3LCJleHAiOjE3NTcwOTQ4ODJ9.ke2dXMzBR4LppknmT42-iw8KQ-7GAkr-BWAvG6_PHGfzLe2ieOrwuS9moarOfPjC3oqcPZRteu7LJ88v4H76MA"
+}
+{
+  "firstname": "Julieta",
+  "lastname": "Morales",
+  "email": "juli.morales@gmail.com",
+  "password": "juli2024",
+  "role": "ADMIN",
+  "telefono": 1178901234
+}
+{
+  "email": "juli.morales@gmail.com",
+  "password": "juli2024"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdWxpLm1vcmFsZXNAZ21haWwuY29tIiwiaWF0IjoxNzU3MDA4NTU4LCJHaXNlbGUiOjEyMzQ1NjcsImV4cCI6MTc1NzA5NDk1OH0.INjyu8XWIMuqPArsxjZrXKv6HyDvyTS5gHZDzCXvwcWgzLQ7hrKJ-n-cG3pOJ3gNqlW9XYOABRjHLymsPDhLPA"
+}
+{
+  "firstname": "Carlos",
+  "lastname": "Lopez",
+  "email": "carlos.lopez@email.com",
+  "password": "userpass456",
+  "role": "USER",
+  "telefono": 123456789
+}
+{
+  "email": "carlos.lopez@email.com",
+  "password": "userpass456"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjYXJsb3MubG9wZXpAZW1haWwuY29tIiwiaWF0IjoxNzU2OTk2NDA2LCJHaXNlbGUiOjEyMzQ1NjcsImV4cCI6MTc1NzA4MjgwNn0.Xf1d8nmvt2nANz8nJHIEX5GTp820Ga3N4KUc4skRF6D2NCNCcxEs0QaWBt2v-44sAPxxDZX1S0BNN8aA0THh3g"
+}
+
+{
+  "firstname": "Nicolas",
+  "lastname": "Crousas",
+  "email": "crousitas@email.com",
+  "password": "adminpass1234",
+  "role": "ADMIN",
+  "telefono": 987654321
+}
+{
+  "email": "crousitas@email.com",
+  "password": "adminpass1234"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjcm91c2l0YXNAZW1haWwuY29tIiwiaWF0IjoxNzU2OTk2NTU3LCJHaXNlbGUiOjEyMzQ1NjcsImV4cCI6MTc1NzA4Mjk1N30.Sxe-911NdFGH8Fas0iGhfzUaGkJNr-zTpkS0SGCxEvrQ3yLVeFfSu8r4xIzeKUyypo4LN19kjFUiJRg-YbQaKg"
+}
+
+{
+  "firstname": "santiago",
+  "lastname": "paisa",
+  "email": "tutelas@email.com",
+  "password": "adminpass123",
+  "role": "ADMIN",
+  "telefono": 19283457,
+	"activo": true
+}
+{
+  "email": "tutelas@email.com",
+  "password": "adminpass123"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0dXRlbGFzQGVtYWlsLmNvbSIsImlhdCI6MTc1NzAwNTQ2NiwiR2lzZWxlIjoxMjM0NTY3LCJleHAiOjE3NTcwOTE4NjZ9.PaAeyUUTQSNMVBj1q_ECEvLBL8DDx36YjYbf3u22CYc622I5vxoV1-wj1ZRzZzLTMsxQauPqaXS6IUYBO7suDQ"
+}
+
+{
+  "firstname": "robert",
+  "lastname": "Lucas",
+  "email": "rl@email.com",
+  "password": "userpass890",
+  "role": "USER",
+  "telefono": 123456789
+}
+{
+  "email": "rl@email.com",
+  "password": "userpass890"
+}
+{
+	"access_token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJybEBlbWFpbC5jb20iLCJpYXQiOjE3NTcwMDY2OTcsIkdpc2VsZSI6MTIzNDU2NywiZXhwIjoxNzU3MDkzMDk3fQ.W719tXRd3bkQbvyKQ9E7N-p1ZFTmCOB9mV6WahzD395MJNPHfI3ImFttWXgTPwKoPE5e8SDnjpFu_vxnw2je_A"
+}
+
+{
+  "email": "martin.lopez@gmail.com",
+  "contrasena": "MartinL2025!",
+  "nombre": "Martín",
+  "apellido": "López",
+  "telefono": 1155667788,
+  "rol": "USER"
+}
+{
+  "email": "martin.lopez@gmail.com",
+  "password": "MartinL2025!"
+}
+{
+  "email": "andrea.garcia@hotmail.com",
+  "contrasena": "Andrea2025!",
+  "nombre": "Andrea",
+  "apellido": "García",
+  "telefono": 1156789012,
+  "rol": "USER"
+}
+{
+  "email": "andrea.garcia@hotmail.com",
+  "password": "Andrea2025!"
+}
+{
+  "email": "pablo.sanchez@yahoo.com",
+  "contrasena": "PabloS2025!",
+  "nombre": "Pablo",
+  "apellido": "Sánchez",
+  "telefono": 1157890123,
+  "rol": "USER"
+}
+{
+  "email": "pablo.sanchez@yahoo.com",
+  "password": "PabloS2025!"
+}
+{
+  "email": "julieta.martinez@gmail.com",
+  "contrasena": "JulieM2025!",
+  "nombre": "Julieta",
+  "apellido": "Martínez",
+  "telefono": 1158901234,
+  "rol": "USER"
+}
+{
+  "email": "julieta.martinez@gmail.com",
+  "password": "JulieM2025!"
+}
+{
+  "email": "fernando.diaz@outlook.com",
+  "contrasena": "FerDiaz2025!",
+  "nombre": "Fernando",
+  "apellido": "Díaz",
+  "telefono": 1159012345,
+  "rol": "ADMIN"
+}
+{
+  "email": "fernando.diaz@outlook.com",
+  "password": "FerDiaz2025!"
+}
+
+
+// ---------------------------------//
+// ------------- AUTOS -------------//
+// ---------------------------------//
+
+insertar http://localhost:4002/api/autos
+get http://localhost:4002/api/autos
+getbyid http://localhost:4002/api/autos/{idAuto}
+
+{
+  "marca": "Toyota",
+  "modelo": "Corolla XEi",
+  "anio": 2021,
+  "estado": "Usado",
+  "kilometraje": 38000,
+  "combustible": "Nafta",
+  "tipoCategoria": "Sedán",
+  "capacidadTanque": 50,
+  "tipoCaja": "Automática",
+  "motor": "1.8 VVT-i"
+}
+{
+  "marca": "Volkswagen",
+  "modelo": "Polo Highline",
+  "anio": 2022,
+  "estado": "Usado",
+  "kilometraje": 22000,
+  "combustible": "Nafta",
+  "tipoCategoria": "Hatchback",
+  "capacidadTanque": 52,
+  "tipoCaja": "Manual",
+  "motor": "1.6 MSI"
+}
+{
+  "marca": "Chevrolet",
+  "modelo": "Tracker Premier",
+  "anio": 2023,
+  "estado": "Nuevo",
+  "kilometraje": 15,
+  "combustible": "Nafta",
+  "tipoCategoria": "SUV",
+  "capacidadTanque": 44,
+  "tipoCaja": "Automática",
+  "motor": "1.2 Turbo"
+}
+{
+  "marca": "Fiat",
+  "modelo": "Cronos Precision",
+  "anio": 2020,
+  "estado": "Usado",
+  "kilometraje": 45000,
+  "combustible": "Nafta",
+  "tipoCategoria": "Sedán",
+  "capacidadTanque": 48,
+  "tipoCaja": "Manual",
+  "motor": "1.8 E.torQ"
+}
+{
+  "marca": "Ford",
+  "modelo": "Ranger XLT 4x4",
+  "anio": 2019,
+  "estado": "Usado",
+  "kilometraje": 82000,
+  "combustible": "Diésel",
+  "tipoCategoria": "Pickup",
+  "capacidadTanque": 80,
+  "tipoCaja": "Automática",
+  "motor": "3.2 TDCi"
+}
+{
+  "marca": "Renault",
+  "modelo": "Kangoo Express",
+  "anio": 2018,
+  "estado": "Usado",
+  "kilometraje": 97000,
+  "combustible": "Nafta",
+  "tipoCategoria": "Utilitario",
+  "capacidadTanque": 50,
+  "tipoCaja": "Manual",
+  "motor": "1.6 16v"
+}
+
+// ---------------------------------//
+// --------- PUBLICACIONES ---------//
+// ---------------------------------//
+
+
+Publicaciones
+getAllPublicacaiones http://localhost:4002/api/publicaciones
+getPublicaicoanesById http://localhost:4002/api/publicaciones/{idPublicacion}
+getPublicacionesByIdUsuario http://localhost:4002/api/publicaciones/usuario/{idUsuario}
+buscarPublicaciones http://localhost:4002/api/publicaciones/buscar
+getPublicaionesByRangoPrecio http://localhost:4002/api/publicaciones/rango-precio
+getPublicacionesbyEstado http://localhost:4002/api/publicaciones/estado/{estado}
+createPublicaion http://localhost:4002/api/publicaciones
+updatePublicaion http://localhost:4002/api/publicaciones/{idPublicacion}
+updateEstadoPublicacion http://localhost:4002/api/publicaciones/{idPublicacion}/estado
+deletePublicaion http://localhost:4002/api/publicaciones/{idPublicacion}
+
+{
+  "idUsuario": 3,
+  "idAuto": 1,
+  "titulo": "Toyota Corolla XEi 2021 - impecable",
+  "descripcion": "1.8 VVT-i, automático, 38.000 km. Service al día, único dueño, sin multas.",
+  "ubicacion": "CABA - Villa Urquiza",
+  "precio": 14500000,
+  "metodoDePago": "Efectivo, transferencia, financiación"
+}
+{
+  "idUsuario": 8,
+  "idAuto": 2,
+  "titulo": "VW Polo Highline 2022 - excelente estado",
+  "descripcion": "1.6 MSI, manual, 22.000 km. Titular vende. Duerme en cochera.",
+  "ubicacion": "GBA Norte - Vicente López",
+  "precio": 9800000,
+  "metodoDePago": "Efectivo, transferencia"
+}
+{
+  "idUsuario": 1,
+  "idAuto": 3,
+  "titulo": "Chevrolet Tracker Premier 2023 - 0-15 km",
+  "descripcion": "1.2 Turbo, automática. Prácticamente sin uso. Garantía vigente.",
+  "ubicacion": "CABA - Palermo",
+  "precio": 17200000,
+  "metodoDePago": "Efectivo, transferencia, financiación"
+}
+{
+  "idUsuario": 7,
+  "idAuto": 5,
+  "titulo": "Ford Ranger XLT 4x4 2019 - lista para trabajar",
+  "descripcion": "3.2 TDCi, automática, 82.000 km. Mantenimiento completo, cubiertas nuevas.",
+  "ubicacion": "Neuquén - Capital",
+  "precio": 12800000,
+  "metodoDePago": "Efectivo, transferencia"
+}
+{
+  "idUsuario": 9,
+  "idAuto": 4,
+  "titulo": "Fiat Cronos Precision 2020 - cuidado",
+  "descripcion": "1.8 E.torQ, manual, 45.000 km. VTV y service al día.",
+  "ubicacion": "GBA Sur - Lanús",
+  "precio": 7500000,
+  "metodoDePago": "Efectivo, transferencia, permuta"
+}
+{
+  "idUsuario": 5,
+  "idAuto": 6,
+  "titulo": "Renault Sandero Stepway 2022 - Poco uso",
+  "descripcion": "1.6 16v, manual, 18.500 km. Un solo dueño, estado impecable, todos los servicios realizados en concesionario oficial.",
+  "ubicacion": "Córdoba - Capital",
+  "precio": 8650000,
+  "metodoDePago": "Efectivo, transferencia bancaria, financiación hasta 12 cuotas"
+}
+
+// ---------------------------------//
+// ------------- FOTOS -------------//
+// ---------------------------------//
+
+
+Fotos
+getfotos   http://localhost:4002/api/publicaciones/{idPublicacion}/fotos
+getFotosById  http://localhost:4002/api/publicaciones/{idPublicacion}/fotos/{idFoto}
+getFotosContenido  http://localhost:4002/api/publicaciones/{idPublicacion}/fotos-contenido
+UploadFoto  http://localhost:4002/api/publicaciones/{idPublicacion}/fotos, consumes = "multipart/form-data
+deleteFoto   http://localhost:4002/api/publicaciones/{idPublicacion}/fotos/{idFoto}
+setMainFoto   http://localhost:4002/api/publicaciones/{idPublicacion}/fotos/{idFoto}/principal
+updateFotoOrder  http://localhost:4002/api/publicaciones/{idPublicacion}/fotos/{idFoto}/orden
+
+// ---------------------------------//
+// ---------- COMENTARIOS ----------//
+// ---------------------------------//
+
+
+obtenerComentario		http://localhost:4002/{idComentario}
+listarComentariosPrincipales	http://localhost:4002/
+listarComentariosPrincipales	http://localhost:4002/jerarquicos
+listarRespuesta			http://localhost:4002/{idComentario}/respuestas
+crearComentario			http://localhost:4002/
+crearRespuesta			http://localhost:4002/{idComentario}/respuestas
+actualizarTexto			http://localhost:4002/{idComentario}/texto
+eliminarComentario		http://localhost:4002/{idComentario}
+
+{
+  "idUsuario": 3,
+  "texto": "¿El Corolla tiene historial de service oficial? ¿Aceptás permuta?"
+}
+{
+  "idUsuario": 2,
+  "texto": "¿Tiene VTV vigente y detalles de pintura? ¿Aceptarías una tasación por menor valor?"
+}
+{
+  "idUsuario": 4,
+  "texto": "¿Entrega inmediata? ¿Trae auxilio original? Me interesa si tenés los papeles al día."
+}
+{
+  "idUsuario": 6,
+  "texto": "¿Historial de mantenimiento del Cronos? ¿Tiene algún detalle de chapa o pintura que deba saber?"
+}
+{
+  "idUsuario": 1,
+  "texto": "Hola, ¿el precio es negociable? Me interesaría verlo este fin de semana si es posible."
+}
+{
+  "idUsuario": 9,
+  "texto": "¿La Ranger tiene bloqueo de diferencial? ¿Has hecho alguna modificación o es totalmente original?"
+}
+{
+  "idUsuario": 7,
+  "texto": "¿Está al día con las verificaciones técnicas? ¿Tiene algún problema mecánico o electrónico que debería saber?"
+}
+{
+  "idUsuario": 5,
+  "texto": "¿El Polo tiene algún accesorio extra? ¿Tiene cámara de retroceso o sensores de estacionamiento?"
+}
+{
+  "idUsuario": 8,
+  "texto": "¿La Tracker tiene algún detalle estético? ¿Has tenido algún problema con el motor turbo? Estoy muy interesado."
+}
+{
+  "idUsuario": 10,
+  "texto": "¿Cuánto tiempo lo has tenido? ¿Es importado o nacional? Quisiera coordinar una visita para verlo en persona."
+}

@@ -81,7 +81,7 @@ public class UsuariosController {
                 .body(resultado);
     }
 
-    // --- Metodos PUT ---
+    // --- Metodos PUT --- //
     
     @PutMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponse> updateUsuario(
