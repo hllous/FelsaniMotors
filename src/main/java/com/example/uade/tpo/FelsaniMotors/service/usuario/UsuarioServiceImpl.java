@@ -3,6 +3,7 @@ package com.example.uade.tpo.FelsaniMotors.service.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.uade.tpo.FelsaniMotors.dto.request.CambioContrasenaRequest;
@@ -28,6 +29,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     
     @Autowired
     private PublicacionRepository publicacionRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Page<UsuarioResponse> getUsuarios(Pageable pageable) {
@@ -89,13 +93,13 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + idUsuario));
         
-        if (usuario.getContrasena().equals(request.getContrasenaActual())) {
-            usuario.setContrasena(request.getNuevaContrasena());
-        }else{
+        // Usar passwordEncoder para comparar la contraseña actual
+        if (passwordEncoder.matches(request.getContrasenaActual(), usuario.getContrasena())) {
+            // Encriptar la nueva contraseña antes de guardarla
+            usuario.setContrasena(passwordEncoder.encode(request.getNuevaContrasena()));
+        } else {
             throw new ContrasenaIncorrectaException("Contraseña actual incorrecta");
         }
-        
-        
         
         return convertToDto(usuarioRepository.save(usuario));
     }

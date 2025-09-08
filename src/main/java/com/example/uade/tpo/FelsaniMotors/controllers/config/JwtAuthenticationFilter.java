@@ -54,10 +54,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            
             SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token invalido");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 

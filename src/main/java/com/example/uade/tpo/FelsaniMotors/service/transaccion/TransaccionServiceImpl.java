@@ -83,8 +83,7 @@ public class TransaccionServiceImpl implements TransaccionService {
         
         // Validar que el monto sea igual al precio de la publicacion
         if (Float.compare(monto, publicacion.getPrecio()) != 0) {
-            throw new TransaccionInvalidaException("El monto de la transacción (" + monto + 
-                    ") debe ser igual al precio de la publicación (" + publicacion.getPrecio() + ")");
+            throw new TransaccionInvalidaException("El monto de la transacción (" + monto + ") debe ser igual al precio de la publicación (" + publicacion.getPrecio() + ")");
         }
         
         // Crear la transaccion

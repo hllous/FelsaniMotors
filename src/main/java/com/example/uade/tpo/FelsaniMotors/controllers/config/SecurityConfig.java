@@ -66,7 +66,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/publicaciones/*/fotos/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/api/publicaciones/*/fotos/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 
-                                // Cualquier otro endpoint requiere autenticación
+                                // Cualquier otro endpoint requiere autenticacion
                                 .anyRequest().authenticated())
                         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                         .authenticationProvider(authenticationProvider)
