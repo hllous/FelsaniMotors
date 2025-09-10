@@ -1,6 +1,6 @@
 ## API-Lunes-Grupo7
 
-### Felsani Motors - Seccion Backend
+### Felsani Motors - Sección Backend
 
 ### Integrantes:
 - Iriarte, Facundo (LU: 1157051) https://github.com/FacuIria
