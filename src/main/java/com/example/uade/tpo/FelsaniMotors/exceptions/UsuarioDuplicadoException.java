@@ -3,6 +3,14 @@ package com.example.uade.tpo.FelsaniMotors.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "El email ya existe")
-public class UsuarioDuplicadoException extends Exception { }
+@ResponseStatus(code = HttpStatus.CONFLICT, reason = "Usuario duplicado")
+public class UsuarioDuplicadoException extends RuntimeException {
+    public UsuarioDuplicadoException() {
+        super("El email ya existe");
+    }
+    
+    public UsuarioDuplicadoException(String mensaje) {
+        super(mensaje);
+    }
+}
 

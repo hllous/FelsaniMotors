@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.uade.tpo.FelsaniMotors.dto.request.CambioContrasenaRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioUpdateRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioMeResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioResponse;
-import com.example.uade.tpo.FelsaniMotors.exceptions.ContrasenaIncorrectaException;
-import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicadoException;
-import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioNoEncontradoException;
+import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.service.usuario.UsuarioService;
 
 @RestController
@@ -68,14 +68,18 @@ public class UsuariosController {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioMeResponse> getCurrentUser(Authentication authentication) {
+        Usuario usuarioActual = (Usuario) authentication.getPrincipal();
+        UsuarioMeResponse response = usuarioService.getCurrentUser(usuarioActual.getIdUsuario());
+        return ResponseEntity.ok(response);
+    }
+
     // --- Metodos POST ---
     
     @PostMapping
-    public ResponseEntity<UsuarioResponse> createUsuario(@RequestBody UsuarioCreateRequest request)
-            throws UsuarioDuplicadoException {
-        
+    public ResponseEntity<UsuarioResponse> createUsuario(@RequestBody UsuarioCreateRequest request) {
         UsuarioResponse resultado = usuarioService.createUsuario(request);
-        
         return ResponseEntity
                 .created(URI.create("/api/usuarios/" + resultado.getIdUsuario()))
                 .body(resultado);
@@ -87,40 +91,24 @@ public class UsuariosController {
     public ResponseEntity<UsuarioResponse> updateUsuario(
             @PathVariable Long idUsuario,
             @RequestBody UsuarioUpdateRequest request) {
-        
-        try {
-            UsuarioResponse resultado = usuarioService.updateUsuario(idUsuario, request);
-            return ResponseEntity.ok(resultado);
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
-        }
+        UsuarioResponse resultado = usuarioService.updateUsuario(idUsuario, request);
+        return ResponseEntity.ok(resultado);
     }
     
     @PutMapping("/{idUsuario}/cambiar-contrasena")
     public ResponseEntity<UsuarioResponse> cambiarContrasena(
             @PathVariable Long idUsuario,
             @RequestBody CambioContrasenaRequest request) {
-        
-        try {
-            UsuarioResponse resultado = usuarioService.cambiarContrasena(idUsuario, request);
-            return ResponseEntity.ok(resultado);
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
-        } catch (ContrasenaIncorrectaException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        UsuarioResponse resultado = usuarioService.cambiarContrasena(idUsuario, request);
+        return ResponseEntity.ok(resultado);
     }
 
     // --- Métodos DELETE ---
     
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Void> deleteUsuario(@PathVariable Long idUsuario) {
-        try {
-            usuarioService.deleteUsuario(idUsuario);
-            return ResponseEntity.noContent().build();
-        } catch (UsuarioNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
-        }
+        usuarioService.deleteUsuario(idUsuario);
+        return ResponseEntity.noContent().build();
     }
 }
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.uade.tpo.FelsaniMotors.dto.request.ComentarioCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.ComentarioUpdateTextoRequest;
-import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
+import com.example.uade.tpo.FelsaniMotors.dto.response.ComentarioResponse;
+import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.service.comentario.ComentarioService;
 
 /*
@@ -49,35 +51,39 @@ public class ComentarioController {
     // ---Seccion GET --- //
 
     @GetMapping("/{idComentario}")
-    public ResponseEntity<Comentario> obtenerComentario(
+    public ResponseEntity<ComentarioResponse> obtenerComentario(
             @PathVariable Long idPublicacion, 
             @PathVariable Long idComentario) {
-        return ResponseEntity.ok(comentarioService.buscarPorId(idComentario));
+        ComentarioResponse comentario = comentarioService.buscarPorId(idComentario);
+        return ResponseEntity.ok(comentario);
     }
 
     @GetMapping
-    public ResponseEntity<List<Comentario>> listarComentariosPrincipales(@PathVariable Long idPublicacion) {
-        return ResponseEntity.ok(comentarioService.listarComentariosPrincipales(idPublicacion));
+    public ResponseEntity<List<ComentarioResponse>> listarComentariosPrincipales(@PathVariable Long idPublicacion) {
+        List<ComentarioResponse> comentarios = comentarioService.listarComentariosPrincipales(idPublicacion);
+        return ResponseEntity.ok(comentarios);
     }
 
     @GetMapping("/jerarquicos")
-    public ResponseEntity<List<Comentario>> listarComentariosJerarquicamente(@PathVariable Long idPublicacion) {
-        return ResponseEntity.ok(comentarioService.listarComentariosOrdenados(idPublicacion));
+    public ResponseEntity<List<ComentarioResponse>> listarComentariosJerarquicamente(@PathVariable Long idPublicacion) {
+        List<ComentarioResponse> comentarios = comentarioService.listarComentariosOrdenados(idPublicacion);
+        return ResponseEntity.ok(comentarios);
     }
 
     @GetMapping("/{idComentario}/respuestas")
-    public ResponseEntity<List<Comentario>> listarRespuestas(
+    public ResponseEntity<List<ComentarioResponse>> listarRespuestas(
             @PathVariable Long idPublicacion,
             @PathVariable Long idComentario) {
-        return ResponseEntity.ok(comentarioService.listarRespuestas(idComentario));
+        List<ComentarioResponse> respuestas = comentarioService.listarRespuestas(idComentario);
+        return ResponseEntity.ok(respuestas);
     }
 
     // ---Seccion POST--- //
     @PostMapping
-    public ResponseEntity<Comentario> crearComentario(
+    public ResponseEntity<ComentarioResponse> crearComentario(
             @PathVariable Long idPublicacion,
             @RequestBody ComentarioCreateRequest request) {
-        Comentario comentarioCreado = comentarioService.crearComentario(
+        ComentarioResponse comentarioCreado = comentarioService.crearComentario(
             idPublicacion, 
             request.getIdUsuario(), 
             request.getTexto()
@@ -89,12 +95,12 @@ public class ComentarioController {
     }
 
     @PostMapping("/{idComentario}/respuestas")
-    public ResponseEntity<Comentario> crearRespuesta(
+    public ResponseEntity<ComentarioResponse> crearRespuesta(
             @PathVariable Long idPublicacion,
             @PathVariable Long idComentario,
             @RequestBody ComentarioCreateRequest request) {
 
-        Comentario creado = comentarioService.crearRespuesta(
+        ComentarioResponse creado = comentarioService.crearRespuesta(
             idPublicacion, 
             idComentario, 
             request.getIdUsuario(), 
@@ -108,20 +114,25 @@ public class ComentarioController {
 
     //---Seccion PUT--- //
     @PutMapping("/{idComentario}/texto")
-    public ResponseEntity<Comentario> actualizarTexto(
+    public ResponseEntity<ComentarioResponse> actualizarTexto(
             @PathVariable Long idPublicacion,
             @PathVariable Long idComentario,
             @RequestBody ComentarioUpdateTextoRequest request) {
 
-        return ResponseEntity.ok(comentarioService.actualizarTexto(idComentario, request.getTexto()));
+        ComentarioResponse actualizado = comentarioService.actualizarTexto(idComentario, request.getTexto());
+        return ResponseEntity.ok(actualizado);
     }
 
     //---Seccion DELETE--- //
     @DeleteMapping("/{idComentario}")
     public ResponseEntity<Void> eliminarComentario(
             @PathVariable Long idPublicacion,
-            @PathVariable Long idComentario) {
-        comentarioService.eliminarComentario(idComentario);
+            @PathVariable Long idComentario,
+            Authentication authentication) {
+
+        Usuario usuarioActual = (Usuario) authentication.getPrincipal();
+        
+        comentarioService.eliminarComentario(idComentario, usuarioActual.getIdUsuario());
         return ResponseEntity.noContent().build();
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.uade.tpo.FelsaniMotors.dto.request.CambioContrasenaRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioUpdateRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioMeResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
 import com.example.uade.tpo.FelsaniMotors.entity.Role;
@@ -46,7 +47,23 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioResponse createUsuario(UsuarioCreateRequest request) throws UsuarioDuplicadoException {
+    public UsuarioMeResponse getCurrentUser(Long idUsuario) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + idUsuario));
+        
+        UsuarioMeResponse response = new UsuarioMeResponse();
+        response.setIdUsuario(usuario.getIdUsuario());
+        response.setEmail(usuario.getEmail());
+        response.setNombre(usuario.getNombre());
+        response.setApellido(usuario.getApellido());
+        response.setTelefono(usuario.getTelefono());
+        response.setRol(usuario.getRol().name());
+        
+        return response;
+    }
+
+    @Override
+    public UsuarioResponse createUsuario(UsuarioCreateRequest request) {
         if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new UsuarioDuplicadoException();
         }

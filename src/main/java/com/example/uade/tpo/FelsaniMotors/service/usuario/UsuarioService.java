@@ -8,17 +8,18 @@ import org.springframework.data.domain.Pageable;
 import com.example.uade.tpo.FelsaniMotors.dto.request.CambioContrasenaRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.UsuarioUpdateRequest;
+import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioMeResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
-import com.example.uade.tpo.FelsaniMotors.exceptions.UsuarioDuplicadoException;
 
 public interface UsuarioService {
     // Metodos GET
     Page<UsuarioResponse> getUsuarios(Pageable pageable);
     Optional<UsuarioResponse> getUsuarioById(Long idUsuario);
+    UsuarioMeResponse getCurrentUser(Long idUsuario);
     
     // Metodos POST
-    UsuarioResponse createUsuario(UsuarioCreateRequest request) throws UsuarioDuplicadoException;
+    UsuarioResponse createUsuario(UsuarioCreateRequest request);
     
     // Metodos PUT
     UsuarioResponse updateUsuario(Long idUsuario, UsuarioUpdateRequest request);

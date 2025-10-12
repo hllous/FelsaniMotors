@@ -48,6 +48,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/api/autos").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 
                                 // Usuarios - solo administradores pueden ver todos los usuarios
+                                .requestMatchers(HttpMethod.GET, "/api/usuarios/me").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Registro publico

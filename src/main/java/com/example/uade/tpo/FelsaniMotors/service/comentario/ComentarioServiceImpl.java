@@ -3,13 +3,19 @@ package com.example.uade.tpo.FelsaniMotors.service.comentario;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.ComentarioResponse;
+import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponseComentario;
+import com.example.uade.tpo.FelsaniMotors.dto.response.UsuarioResponseComentario;
 import com.example.uade.tpo.FelsaniMotors.entity.Comentario;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
+import com.example.uade.tpo.FelsaniMotors.entity.Role;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
+import com.example.uade.tpo.FelsaniMotors.exceptions.AccesoNoAutorizadoException;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioInvalidoException;
 import com.example.uade.tpo.FelsaniMotors.exceptions.ComentarioNoEncontradoException;
 import com.example.uade.tpo.FelsaniMotors.repository.ComentarioRepository;
@@ -27,7 +33,7 @@ public class ComentarioServiceImpl implements ComentarioService {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public Comentario crearComentario(Long idPublicacion, Long idUsuario, String texto) {
+    public ComentarioResponse crearComentario(Long idPublicacion, Long idUsuario, String texto) {
 
         if (texto == null || texto.isBlank()) {
             throw new ComentarioInvalidoException("El texto del comentario es obligatorio.");
@@ -49,11 +55,12 @@ public class ComentarioServiceImpl implements ComentarioService {
         comentario.setPublicacion(publicacion.get());
         comentario.setUsuario(usuario.get());
         
-        return comentarioRepository.save(comentario);
+        Comentario guardado = comentarioRepository.save(comentario);
+        return convertToDto(guardado);
     }
 
     @Override
-    public Comentario crearRespuesta(Long idPublicacion, Long idComentarioPadre, Long idUsuario, String texto) {
+    public ComentarioResponse crearRespuesta(Long idPublicacion, Long idComentarioPadre, Long idUsuario, String texto) {
 
         Optional<Publicacion> publicacion = publicacionRepository.findById(idPublicacion);
         if (publicacion.isEmpty()) {
@@ -84,51 +91,140 @@ public class ComentarioServiceImpl implements ComentarioService {
         if (respuesta.getFecha() == null) {
             respuesta.setFecha(new Date());
         }
-        return comentarioRepository.save(respuesta);
+        
+        Comentario guardado = comentarioRepository.save(respuesta);
+        return convertToDto(guardado);
     }
 
     @Override
-    public Comentario buscarPorId(Long idComentario) {
+    public ComentarioResponse buscarPorId(Long idComentario) {
         Optional<Comentario> comentario = comentarioRepository.findById(idComentario);
         if (comentario.isEmpty()) {
             throw new ComentarioNoEncontradoException(idComentario);
         }
-        return comentario.get();
+        return convertToDto(comentario.get());
     }
 
     @Override
-    public List<Comentario> listarComentariosPrincipales(Long idPublicacion) {
-        return comentarioRepository.findComentariosPrincipalesByIdPublicacion(idPublicacion);
+    public List<ComentarioResponse> listarComentariosPrincipales(Long idPublicacion) {
+        List<Comentario> comentarios = comentarioRepository.findComentariosPrincipalesByIdPublicacion(idPublicacion);
+        return comentarios.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Comentario> listarRespuestas(Long idComentarioPadre) {
-        return comentarioRepository.findRespuestasByPadreId(idComentarioPadre);
+    public List<ComentarioResponse> listarRespuestas(Long idComentarioPadre) {
+        List<Comentario> respuestas = comentarioRepository.findRespuestasByPadreId(idComentarioPadre);
+        return respuestas.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Comentario> listarComentariosOrdenados(Long idPublicacion) {
-        return comentarioRepository.findAllComentariosByPublicacionOrdenados(idPublicacion);
+    public List<ComentarioResponse> listarComentariosOrdenados(Long idPublicacion) {
+        List<Comentario> comentarios = comentarioRepository.findAllComentariosByPublicacionOrdenados(idPublicacion);
+        return comentarios.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Comentario actualizarTexto(Long idComentario, String nuevoTexto) {
+    public ComentarioResponse actualizarTexto(Long idComentario, String nuevoTexto) {
         if (nuevoTexto == null || nuevoTexto.isBlank()) {
             throw new ComentarioInvalidoException("El nuevo texto no puede estar vacío.");
         }
-        Comentario comentarioAModificar = buscarPorId(idComentario);
+        
+        Optional<Comentario> comentarioOpt = comentarioRepository.findById(idComentario);
+        if (comentarioOpt.isEmpty()) {
+            throw new ComentarioNoEncontradoException(idComentario);
+        }
+        
+        Comentario comentarioAModificar = comentarioOpt.get();
         comentarioAModificar.setTexto(nuevoTexto);
-        return comentarioRepository.save(comentarioAModificar);
+        
+        Comentario actualizado = comentarioRepository.save(comentarioAModificar);
+        return convertToDto(actualizado);
     }
 
     @Override
-    public void eliminarComentario(Long idComentario) {
-        Comentario comentarioAEliminar = buscarPorId(idComentario);
-
-        List<Comentario> respuestas = comentarioAEliminar.getRespuestas();
-        if (respuestas != null && !respuestas.isEmpty()) {
-            respuestas.forEach(hijo -> eliminarComentario(hijo.getIdComentario()));
+    public void eliminarComentario(Long idComentario, Long idUsuarioActual) {
+        Optional<Comentario> comentarioOpt = comentarioRepository.findById(idComentario);
+        if (comentarioOpt.isEmpty()) {
+            throw new ComentarioNoEncontradoException(idComentario);
         }
+        
+        Comentario comentarioAEliminar = comentarioOpt.get();
+        
+        // Obtener el usuario actual
+        Optional<Usuario> usuarioActualOpt = usuarioRepository.findById(idUsuarioActual);
+        if (usuarioActualOpt.isEmpty()) {
+            throw new ComentarioInvalidoException("El usuario no existe.");
+        }
+        
+        Usuario usuarioActual = usuarioActualOpt.get();
+        
+        // Verificar si es ADMIN o es el creador del comentario
+        boolean esAdmin = usuarioActual.getRol() == Role.ADMIN;
+        boolean esCreador = comentarioAEliminar.getUsuario().getIdUsuario().equals(idUsuarioActual);
+        
+        if (!esAdmin && !esCreador) {
+            throw new AccesoNoAutorizadoException(
+                "No tienes permisos para eliminar este comentario. Solo el creador o un administrador pueden eliminarlo."
+            );
+        }
+
+        // Eliminar respuestas recursivamente (se eliminan en cascada por la configuración de la entidad)
         comentarioRepository.delete(comentarioAEliminar);
+    }
+    
+    // Método privado para convertir Comentario a ComentarioResponse
+    private ComentarioResponse convertToDto(Comentario comentario) {
+        if (comentario == null) return null;
+        
+        ComentarioResponse response = new ComentarioResponse();
+        response.setIdComentario(comentario.getIdComentario());
+        response.setTexto(comentario.getTexto());
+        response.setFecha(comentario.getFecha());
+        
+        // Convertir usuario
+        if (comentario.getUsuario() != null) {
+            UsuarioResponseComentario usuarioDto = new UsuarioResponseComentario();
+            usuarioDto.setIdUsuario(comentario.getUsuario().getIdUsuario());
+            usuarioDto.setEmail(comentario.getUsuario().getEmail());
+            usuarioDto.setNombre(comentario.getUsuario().getNombre());
+            usuarioDto.setApellido(comentario.getUsuario().getApellido());
+            usuarioDto.setTelefono(comentario.getUsuario().getTelefono());
+            usuarioDto.setRol(comentario.getUsuario().getRol().name());
+            response.setUsuario(usuarioDto);
+        }
+        
+        // Convertir publicación
+        if (comentario.getPublicacion() != null) {
+            PublicacionResponseComentario publicacionDto = new PublicacionResponseComentario();
+            publicacionDto.setIdPublicacion(comentario.getPublicacion().getIdPublicacion());
+            publicacionDto.setTitulo(comentario.getPublicacion().getTitulo());
+            publicacionDto.setDescripcion(comentario.getPublicacion().getDescripcion());
+            publicacionDto.setUbicacion(comentario.getPublicacion().getUbicacion());
+            publicacionDto.setPrecio(comentario.getPublicacion().getPrecio());
+            publicacionDto.setFechaPublicacion(comentario.getPublicacion().getFechaPublicacion());
+            publicacionDto.setEstado(comentario.getPublicacion().getEstado());
+            response.setPublicacion(publicacionDto);
+        }
+        
+        // Agregar ID del comentario padre si existe
+        if (comentario.getPadre() != null) {
+            response.setIdComentarioPadre(comentario.getPadre().getIdComentario());
+        }
+        
+        // Convertir respuestas (si existen)
+        if (comentario.getRespuestas() != null && !comentario.getRespuestas().isEmpty()) {
+            List<ComentarioResponse> respuestasDto = comentario.getRespuestas().stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+            response.setRespuestas(respuestasDto);
+        }
+        
+        return response;
     }
 }

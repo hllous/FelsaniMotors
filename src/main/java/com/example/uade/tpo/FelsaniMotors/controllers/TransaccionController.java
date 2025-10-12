@@ -3,16 +3,12 @@ package com.example.uade.tpo.FelsaniMotors.controllers;
 import com.example.uade.tpo.FelsaniMotors.dto.request.TransaccionCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.TransaccionUpdateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.response.TransaccionResponse;
-import com.example.uade.tpo.FelsaniMotors.exceptions.TransaccionInvalidaException;
-import com.example.uade.tpo.FelsaniMotors.exceptions.TransaccionNoEncontradaException;
 import com.example.uade.tpo.FelsaniMotors.service.transaccion.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,16 +70,12 @@ public class TransaccionController {
     
     @GetMapping("/{idTransaccion}")
     public ResponseEntity<TransaccionResponse> getTransaccionById(@PathVariable Long idTransaccion) {
-        try {
-            Optional<TransaccionResponse> transaccion = transaccionService.getTransaccionById(idTransaccion);
-            
-            if (transaccion.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            } else {
-                return ResponseEntity.ok(transaccion.get());
-            }
-        } catch (TransaccionNoEncontradaException e) {
+        Optional<TransaccionResponse> transaccion = transaccionService.getTransaccionById(idTransaccion);
+        
+        if (transaccion.isEmpty()) {
             return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(transaccion.get());
         }
     }
     
@@ -126,22 +118,14 @@ public class TransaccionController {
             @RequestBody TransaccionUpdateRequest request,
             Authentication authentication) {
         
-        try {
-            TransaccionResponse transaccionActualizada = transaccionService.updateTransaccion(
-                idTransaccion,
-                request.getEstado(),
-                request.getReferenciaPago(),
-                request.getComentarios(),
-                authentication
-            );
-            return ResponseEntity.ok(transaccionActualizada);
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (TransaccionNoEncontradaException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (TransaccionInvalidaException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        TransaccionResponse transaccionActualizada = transaccionService.updateTransaccion(
+            idTransaccion,
+            request.getEstado(),
+            request.getReferenciaPago(),
+            request.getComentarios(),
+            authentication
+        );
+        return ResponseEntity.ok(transaccionActualizada);
     }
 
     // --- Seccion DELETE --- //
@@ -151,16 +135,12 @@ public class TransaccionController {
             @PathVariable Long idTransaccion,
             Authentication authentication) {
         
-        try {
-            boolean eliminado = transaccionService.deleteTransaccion(idTransaccion, authentication);
-            
-            if (eliminado) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        boolean eliminado = transaccionService.deleteTransaccion(idTransaccion, authentication);
+        
+        if (eliminado) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 }
