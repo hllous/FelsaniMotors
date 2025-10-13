@@ -1,5 +1,6 @@
 package com.example.uade.tpo.FelsaniMotors.controllers;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.FiltrosOpcionesResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionCreateRequest;
 import com.example.uade.tpo.FelsaniMotors.dto.request.PublicacionUpdateRequest;
@@ -22,12 +23,13 @@ import java.util.Optional;
  * 
  * GET
  * 
- * - getAllPublicaciones = Devuelve todas las publicaciones, con o sin filtros
- * - getPublicacionById = Devuelve una publicacion utilizando su id
- * - getPublicacionesByIdUsuario = Devuelve una publicacion utilizando un id de usuario
- * - buscarPublicaciones = Busca publicaciones por titulo, descripcion o ubicacion
- * - getPublicacionesByRangoPrecio
- * - getPublicacionesByEstado
+ * - getAllPublicaciones = Devuelve todas las publicaciones
+ * - getPublicacionById = Devuelve una publicacion por su id
+ * - getPublicacionesByIdUsuario = Devuelve publicaciones de un usuario
+ * - getPublicacionesByRangoPrecio = Devuelve publicaciones por rango de precio
+ * - getPublicacionesByEstado = Devuelve publicaciones por estado
+ * - filtrarPublicaciones = Filtra publicaciones con búsqueda de texto y filtros múltiples
+ * - getOpcionesFiltros = Devuelve opciones disponibles para los filtros
  * 
  * POST
  * 
@@ -98,29 +100,6 @@ public class PublicacionController {
         }
     }
     
-    @GetMapping("/buscar")
-    public ResponseEntity<List<PublicacionResponse>> buscarPublicaciones(
-            @RequestParam String busqueda,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
-
-        Pageable pageable;
-        if (page == null || size == null) {
-            pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        } else {
-            pageable = PageRequest.of(page, size);
-        }
-        
-        Page<PublicacionResponse> publicacionesPage = publicacionService.buscarPublicaciones(busqueda, pageable);
-        List<PublicacionResponse> publicaciones = publicacionesPage.getContent();
-
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
     @GetMapping("/rango-precio")
     public ResponseEntity<List<PublicacionResponse>> getPublicacionesByRangoPrecio(
             @RequestParam float precioMin,
@@ -146,6 +125,47 @@ public class PublicacionController {
         } else {
             return ResponseEntity.ok(publicaciones);
         }
+    }
+    
+    @GetMapping("/filtrar")
+    public ResponseEntity<Page<PublicacionResponse>> filtrarPublicaciones(
+            @RequestParam(required = false) String busqueda,
+            @RequestParam(required = false) List<String> marca,
+            @RequestParam(required = false) List<String> modelo,
+            @RequestParam(required = false) List<String> anio,
+            @RequestParam(required = false) List<String> estado,
+            @RequestParam(required = false) List<String> kilometraje,
+            @RequestParam(required = false) List<String> combustible,
+            @RequestParam(required = false) List<String> tipoCategoria,
+            @RequestParam(required = false) List<String> tipoCaja,
+            @RequestParam(required = false) List<String> motor,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        Pageable pageable;
+        if (page == null || size == null) {
+            pageable = PageRequest.of(0, 20); // Default: 20 resultados por página
+        } else {
+            pageable = PageRequest.of(page, size);
+        }
+        
+        Page<PublicacionResponse> publicaciones = publicacionService.filtrarPublicaciones(
+            busqueda, marca, modelo, anio, estado, kilometraje,
+            combustible, tipoCategoria, tipoCaja, motor,
+            pageable
+        );
+
+        if (publicaciones.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(publicaciones);
+        }
+    }
+    
+    @GetMapping("/filtros/opciones")
+    public ResponseEntity<FiltrosOpcionesResponse> getOpcionesFiltros() {
+        FiltrosOpcionesResponse opciones = publicacionService.getOpcionesFiltros();
+        return ResponseEntity.ok(opciones);
     }
     
     // --- Seccion POST --- //

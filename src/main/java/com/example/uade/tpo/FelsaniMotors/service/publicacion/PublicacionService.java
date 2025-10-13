@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.FiltrosOpcionesResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 
 import java.util.List;
@@ -22,14 +23,29 @@ public interface PublicacionService {
     // Obtengi publicaciones de un usuario especifico
     List<PublicacionResponse> getPublicacionesByIdUsuario(Long idUsuario);
     
-    // Obtengo publicaciones por una busqueda de un string en el titulo, descripcion o ubicacion
-    Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable);
-    
     // Obtengo publicaciones por rango de precio
     List<PublicacionResponse> getPublicacionesByRangoPrecio(float precioMin, float precioMax);
     
     // Obtebgi publicaciones por estado
     List<PublicacionResponse> getPublicacionesByEstado(char estado);
+    
+    // Filtrar publicaciones con criterios dinámicos (incluye búsqueda de texto)
+    Page<PublicacionResponse> filtrarPublicaciones(
+        String busqueda,
+        List<String> marcas,
+        List<String> modelos,
+        List<String> anios,
+        List<String> estados,
+        List<String> kilometrajes,
+        List<String> combustibles,
+        List<String> tipoCategorias,
+        List<String> tipoCajas,
+        List<String> motores,
+        Pageable pageable
+    );
+    
+    // Obtener opciones disponibles para filtros
+    FiltrosOpcionesResponse getOpcionesFiltros();
     
     // --- Seccion POST --- //
     

@@ -1,5 +1,6 @@
 package com.example.uade.tpo.FelsaniMotors.service.publicacion;
 
+import com.example.uade.tpo.FelsaniMotors.dto.response.FiltrosOpcionesResponse;
 import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
@@ -71,13 +72,6 @@ public class PublicacionServiceImpl implements PublicacionService {
         }
         
         return publicacionesResponse;
-    }
-
-    // Utilizado en searchPublicaciones
-    @Override
-    public Page<PublicacionResponse> buscarPublicaciones(String busqueda, Pageable pageable) {
-        Page<Publicacion> publicaciones = publicacionRepository.buscarPublicaciones(busqueda, pageable);
-        return publicaciones.map(publicacion -> convertToDto(publicacion));
     }
 
     @Override
@@ -227,6 +221,67 @@ public class PublicacionServiceImpl implements PublicacionService {
         
         publicacionRepository.deleteById(idPublicacion);
         return true;
+    }
+    
+    @Override
+    public Page<PublicacionResponse> filtrarPublicaciones(
+            String busqueda,
+            List<String> marcas,
+            List<String> modelos,
+            List<String> anios,
+            List<String> estados,
+            List<String> kilometrajes,
+            List<String> combustibles,
+            List<String> tipoCategorias,
+            List<String> tipoCajas,
+            List<String> motores,
+            Pageable pageable) {
+        
+        // Calcular min/max de kilometrajes
+        Float kmMin = null;
+        Float kmMax = null;
+        
+        if (kilometrajes != null && !kilometrajes.isEmpty()) {
+            for (String rango : kilometrajes) {
+                String[] partes = rango.split("-");
+                if (partes.length == 2) {
+                    try {
+                        float min = Float.parseFloat(partes[0]);
+                        float max = Float.parseFloat(partes[1]);
+                        kmMin = (kmMin == null) ? min : Math.min(kmMin, min);
+                        kmMax = (kmMax == null) ? max : Math.max(kmMax, max);
+                    } catch (NumberFormatException e) {
+                        // Ignorar rangos inválidos
+                    }
+                }
+            }
+        }
+        
+        // Llamar al repositorio con el query
+        Page<Publicacion> publicaciones = publicacionRepository.filtrar(
+            busqueda, marcas, modelos, anios, estados,
+            combustibles, tipoCategorias, tipoCajas, motores,
+            kmMin, kmMax, pageable
+        );
+        
+        // Convertir a DTO
+        return publicaciones.map(this::convertToDto);
+    }
+    
+    @Override
+    public FiltrosOpcionesResponse getOpcionesFiltros() {
+        FiltrosOpcionesResponse opciones = new FiltrosOpcionesResponse();
+        
+        opciones.setMarcas(publicacionRepository.findAllMarcas());
+        opciones.setModelos(publicacionRepository.findAllModelos());
+        opciones.setAnios(publicacionRepository.findAllAnios());
+        opciones.setEstados(publicacionRepository.findAllEstadosAuto());
+        opciones.setCombustibles(publicacionRepository.findAllCombustibles());
+        opciones.setTipoCategorias(publicacionRepository.findAllTipoCategorias());
+        opciones.setTipoCajas(publicacionRepository.findAllTipoCajas());
+        opciones.setMotores(publicacionRepository.findAllMotores());
+        
+        return opciones;
     }
     
     // --- Metodos de conversion --- //
