@@ -1,10 +1,10 @@
 package com.example.uade.tpo.FelsaniMotors.dto.response;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class PublicacionResponse {
     private Long idUsuario;
     private Long idAuto;
     
-    // Datos básicos de la publicación
+    // Datos básicos de la publicación y auto
     private String titulo;
     private String descripcion;
     private String ubicacion;
@@ -25,11 +25,19 @@ public class PublicacionResponse {
     private Date fechaPublicacion;
     private char estado;
     private String metodoDePago;
+    private String marcaAuto;
+    private String modeloAuto;
+    private Integer anio;
+    private String estadoAuto;
+    private Float kilometraje;
+    private String combustible;
+    private String tipoCategoria;
+    private Integer capacidadTanque;
+    private String tipoCaja;
+    private String motor;
     
     // Datos adicionales para mostrar en la UI
     private String nombreUsuario;
-    private String marcaAuto;
-    private String modeloAuto;
     private String imagenPrincipal;
     private Long idFotoPrincipal;
 }

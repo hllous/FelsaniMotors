@@ -288,44 +288,54 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     private PublicacionResponse convertToDto(Publicacion publicacion) {
 
-        PublicacionResponse dto = new PublicacionResponse();
+    PublicacionResponse dto = new PublicacionResponse();
 
-        dto.setIdPublicacion(publicacion.getIdPublicacion());
-        
-        // Establecer IDs en lugar de entidades completas (ver dto/response)
-        if (publicacion.getUsuario() != null) {
-
-            dto.setIdUsuario(publicacion.getUsuario().getIdUsuario());
-            dto.setNombreUsuario(publicacion.getUsuario().getNombre() + " " + publicacion.getUsuario().getApellido());
-        }
-        
-        if (publicacion.getAuto() != null) {
-
-            dto.setIdAuto(publicacion.getAuto().getIdAuto());
-            dto.setMarcaAuto(publicacion.getAuto().getMarca());
-            dto.setModeloAuto(publicacion.getAuto().getModelo());
-        }
-        
-        // Establezco parametros
-        dto.setTitulo(publicacion.getTitulo());
-        dto.setDescripcion(publicacion.getDescripcion());
-        dto.setUbicacion(publicacion.getUbicacion());
-        dto.setPrecio(publicacion.getPrecio());
-        dto.setFechaPublicacion(publicacion.getFechaPublicacion());
-        dto.setEstado(publicacion.getEstado());
-        dto.setMetodoDePago(publicacion.getMetodoDePago());
-        
-        // Buscar y establecer la informacion de la foto principal
-        Optional<Foto> fotoPrincipal = fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true);
-
-        if (fotoPrincipal.isPresent()) {
-            dto.setIdFotoPrincipal(fotoPrincipal.get().getIdFoto());
-            dto.setImagenPrincipal("/api/publicaciones/" + publicacion.getIdPublicacion() + 
-                                  "/fotos/" + fotoPrincipal.get().getIdFoto() + "?includeImage=true");
-        }
-        
-        return dto;
-
+    dto.setIdPublicacion(publicacion.getIdPublicacion());
+    
+    // Establecer IDs en lugar de entidades completas (ver dto/response)
+    if (publicacion.getUsuario() != null) {
+        dto.setIdUsuario(publicacion.getUsuario().getIdUsuario());
+        dto.setNombreUsuario(publicacion.getUsuario().getNombre() + " " + publicacion.getUsuario().getApellido());
     }
+    
+    // ===== MAPEO COMPLETO DEL AUTO (ACTUALIZADO) =====
+    if (publicacion.getAuto() != null) {
+        Auto auto = publicacion.getAuto();
+        
+        dto.setIdAuto(auto.getIdAuto());
+        dto.setMarcaAuto(auto.getMarca());
+        dto.setModeloAuto(auto.getModelo());
+        
+        // ===== NUEVOS CAMPOS AGREGADOS =====
+        dto.setAnio(auto.getAnio());
+        dto.setEstadoAuto(auto.getEstado());
+        dto.setKilometraje(auto.getKilometraje());
+        dto.setCombustible(auto.getCombustible());
+        dto.setTipoCategoria(auto.getTipoCategoria());
+        dto.setCapacidadTanque(auto.getCapacidadTanque());
+        dto.setTipoCaja(auto.getTipoCaja());
+        dto.setMotor(auto.getMotor());
+    }
+    
+    // Establezco parametros
+    dto.setTitulo(publicacion.getTitulo());
+    dto.setDescripcion(publicacion.getDescripcion());
+    dto.setUbicacion(publicacion.getUbicacion());
+    dto.setPrecio(publicacion.getPrecio());
+    dto.setFechaPublicacion(publicacion.getFechaPublicacion());
+    dto.setEstado(publicacion.getEstado());
+    dto.setMetodoDePago(publicacion.getMetodoDePago());
+    
+    // Buscar y establecer la informacion de la foto principal
+    Optional<Foto> fotoPrincipal = fotoRepository.findByPublicacionAndEsPrincipal(publicacion, true);
+
+    if (fotoPrincipal.isPresent()) {
+        dto.setIdFotoPrincipal(fotoPrincipal.get().getIdFoto());
+        dto.setImagenPrincipal("/api/publicaciones/" + publicacion.getIdPublicacion() + 
+                              "/fotos/" + fotoPrincipal.get().getIdFoto() + "?includeImage=true");
+    }
+    
+    return dto;
+}
 
 }
