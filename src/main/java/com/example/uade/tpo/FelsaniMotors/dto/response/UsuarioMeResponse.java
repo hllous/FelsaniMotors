@@ -14,4 +14,5 @@ public class UsuarioMeResponse {
     private String apellido;
     private Integer telefono;
     private String rol;
+    private Boolean activo;
 }

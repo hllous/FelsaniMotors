@@ -67,6 +67,13 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/publicaciones/*/fotos/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/api/publicaciones/*/fotos/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 
+                                // Transacciones - solo usuarios autenticados
+                                .requestMatchers(HttpMethod.GET, "/api/transacciones").hasAuthority(Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/api/transacciones/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/api/transacciones").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.PUT, "/api/transacciones/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/api/transacciones/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                
                                 // Cualquier otro endpoint requiere autenticacion
                                 .anyRequest().authenticated())
                         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

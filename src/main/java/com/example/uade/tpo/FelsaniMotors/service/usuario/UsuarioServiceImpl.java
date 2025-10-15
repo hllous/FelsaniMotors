@@ -58,6 +58,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         response.setApellido(usuario.getApellido());
         response.setTelefono(usuario.getTelefono());
         response.setRol(usuario.getRol().name());
+        response.setActivo(usuario.getActivo());
         
         return response;
     }
