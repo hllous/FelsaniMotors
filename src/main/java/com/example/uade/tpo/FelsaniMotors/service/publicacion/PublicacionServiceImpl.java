@@ -224,14 +224,21 @@ public class PublicacionServiceImpl implements PublicacionService {
             throw new AccessDeniedException("No tienes permiso para eliminar esta publicación");
         }
         
-        // Eliminar transacciones relacionadas primero
+        // 1. Eliminar transacciones relacionadas primero
         List<Transaccion> transacciones = transaccionRepository.findByIdPublicacion(idPublicacion);
         if (!transacciones.isEmpty()) {
             transaccionRepository.deleteAll(transacciones);
         }
         
-        // Ahora eliminar la publicación (fotos y comentarios se eliminan automáticamente por cascade)
-        publicacionRepository.deleteById(idPublicacion);
+        // 2. Desasociar el Auto de la Publicacion
+        Auto auto = publicacion.getAuto();
+        if (auto != null) {
+            auto.setPublicacion(null);
+            autoRepository.save(auto);
+        }
+        
+        // 3. Eliminar la publicación (fotos y comentarios se eliminan automáticamente por cascade)
+        publicacionRepository.delete(publicacion);
         return true;
     }
     
