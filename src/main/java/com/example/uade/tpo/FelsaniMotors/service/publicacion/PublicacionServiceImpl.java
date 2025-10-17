@@ -5,10 +5,12 @@ import com.example.uade.tpo.FelsaniMotors.dto.response.PublicacionResponse;
 import com.example.uade.tpo.FelsaniMotors.entity.Auto;
 import com.example.uade.tpo.FelsaniMotors.entity.Foto;
 import com.example.uade.tpo.FelsaniMotors.entity.Publicacion;
+import com.example.uade.tpo.FelsaniMotors.entity.Transaccion;
 import com.example.uade.tpo.FelsaniMotors.entity.Usuario;
 import com.example.uade.tpo.FelsaniMotors.repository.AutoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.FotoRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.PublicacionRepository;
+import com.example.uade.tpo.FelsaniMotors.repository.TransaccionRepository;
 import com.example.uade.tpo.FelsaniMotors.repository.UsuarioRepository;
 import com.example.uade.tpo.FelsaniMotors.service.AuthenticationService;
 
@@ -41,6 +43,9 @@ public class PublicacionServiceImpl implements PublicacionService {
     
     @Autowired
     private AuthenticationService authService;
+    
+    @Autowired
+    private TransaccionRepository transaccionRepository;
 
     // --- Seccion GET --- //
     
@@ -219,7 +224,21 @@ public class PublicacionServiceImpl implements PublicacionService {
             throw new AccessDeniedException("No tienes permiso para eliminar esta publicación");
         }
         
-        publicacionRepository.deleteById(idPublicacion);
+        // 1. Eliminar transacciones relacionadas primero
+        List<Transaccion> transacciones = transaccionRepository.findByIdPublicacion(idPublicacion);
+        if (!transacciones.isEmpty()) {
+            transaccionRepository.deleteAll(transacciones);
+        }
+        
+        // 2. Desasociar el Auto de la Publicacion
+        Auto auto = publicacion.getAuto();
+        if (auto != null) {
+            auto.setPublicacion(null);
+            autoRepository.save(auto);
+        }
+        
+        // 3. Eliminar la publicación (fotos y comentarios se eliminan automáticamente por cascade)
+        publicacionRepository.delete(publicacion);
         return true;
     }
     
