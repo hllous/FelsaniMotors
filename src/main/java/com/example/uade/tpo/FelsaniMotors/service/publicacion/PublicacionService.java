@@ -57,7 +57,8 @@ public interface PublicacionService {
     
     //Actualizo una publicacion existente
     PublicacionResponse updatePublicacion(Long idPublicacion, String titulo, String descripcion, 
-                                         String ubicacion, float precio, String metodoDePago, Authentication authentication);
+                                         String ubicacion, float precio, Integer descuentoPorcentaje, 
+                                         String metodoDePago, Authentication authentication);
     
     // Actualizo solo el estado de una publicacion
     PublicacionResponse updateEstadoPublicacion(Long idPublicacion, char estado, Authentication authentication);

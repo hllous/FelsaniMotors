@@ -13,5 +13,6 @@ public class PublicacionUpdateRequest {
     private String descripcion;
     private String ubicacion;
     private float precio;
+    private Integer descuentoPorcentaje;
     private String metodoDePago;
 }

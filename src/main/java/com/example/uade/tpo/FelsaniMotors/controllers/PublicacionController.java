@@ -200,7 +200,8 @@ public class PublicacionController {
             request.getTitulo(), 
             request.getDescripcion(), 
             request.getUbicacion(), 
-            request.getPrecio(), 
+            request.getPrecio(),
+            request.getDescuentoPorcentaje(),
             request.getMetodoDePago(), 
             authentication
         );

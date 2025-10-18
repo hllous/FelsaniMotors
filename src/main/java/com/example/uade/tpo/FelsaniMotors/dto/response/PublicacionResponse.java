@@ -22,6 +22,7 @@ public class PublicacionResponse {
     private String descripcion;
     private String ubicacion;
     private float precio;
+    private Integer descuentoPorcentaje;
     private Date fechaPublicacion;
     private char estado;
     private String metodoDePago;

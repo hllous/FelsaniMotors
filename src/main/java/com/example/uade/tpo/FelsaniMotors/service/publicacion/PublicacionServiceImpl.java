@@ -156,7 +156,8 @@ public class PublicacionServiceImpl implements PublicacionService {
             String titulo, 
             String descripcion, 
             String ubicacion, 
-            float precio, 
+            float precio,
+            Integer descuentoPorcentaje,
             String metodoDePago, 
             Authentication authentication) {
 
@@ -173,11 +174,17 @@ public class PublicacionServiceImpl implements PublicacionService {
             throw new AccessDeniedException("No tienes permiso para actualizar esta publicacion");
         }
         
+        // Validar que el descuento esté entre 0 y 99
+        if (descuentoPorcentaje != null && (descuentoPorcentaje < 0 || descuentoPorcentaje > 99)) {
+            throw new IllegalArgumentException("El descuento debe estar entre 0 y 99%");
+        }
+        
         // Actualizo parametros
         publicacion.setTitulo(titulo);
         publicacion.setDescripcion(descripcion);
         publicacion.setUbicacion(ubicacion);
         publicacion.setPrecio(precio);
+        publicacion.setDescuentoPorcentaje(descuentoPorcentaje != null ? descuentoPorcentaje : 0);
         publicacion.setMetodoDePago(metodoDePago);
         
         Publicacion updatedPublicacion = publicacionRepository.save(publicacion);
@@ -330,6 +337,7 @@ public class PublicacionServiceImpl implements PublicacionService {
         dto.setDescripcion(publicacion.getDescripcion());
         dto.setUbicacion(publicacion.getUbicacion());
         dto.setPrecio(publicacion.getPrecio());
+        dto.setDescuentoPorcentaje(publicacion.getDescuentoPorcentaje() != null ? publicacion.getDescuentoPorcentaje() : 0);
         dto.setFechaPublicacion(publicacion.getFechaPublicacion());
         dto.setEstado(publicacion.getEstado());
         dto.setMetodoDePago(publicacion.getMetodoDePago());

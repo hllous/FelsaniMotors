@@ -50,4 +50,16 @@ public class AutoServiceImpl implements AutoService {
         auto.setTipoCategoria(autoRequest.getTipoCategoria());
         return autoRepository.save(auto);
     }
+
+    @Override
+    public boolean deleteAuto(Long autoId) {
+        Optional<Auto> autoOpt = autoRepository.findById(autoId);
+        
+        if (autoOpt.isEmpty()) {
+            return false;
+        }
+        
+        autoRepository.deleteById(autoId);
+        return true;
+    }
 }

@@ -18,4 +18,7 @@ public interface AutoService {
 
     //Crear un nuevo auto.
     Auto createAuto(Auto autoRequest) throws AutoDuplicateException;
+    
+    //Eliminar un auto por su ID.
+    boolean deleteAuto(Long autoId);
 }

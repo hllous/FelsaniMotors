@@ -42,6 +42,9 @@ public class Publicacion {
     @Column(nullable = false)
     private float precio;
     
+    @Column(name = "descuento_porcentaje")
+    private Integer descuentoPorcentaje = 0;
+    
     @Column(name = "fecha_publicacion")
     private Date fechaPublicacion;
     

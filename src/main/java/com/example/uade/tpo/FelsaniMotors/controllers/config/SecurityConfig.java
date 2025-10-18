@@ -47,6 +47,7 @@ public class SecurityConfig {
                                 // Autos - lectura publica, escritura autenticada
                                 .requestMatchers(HttpMethod.GET, "/api/autos", "/api/autos/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/autos").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/api/autos/**").hasAuthority(Role.ADMIN.name())
                                 
                                 // Usuarios - solo administradores pueden ver todos los usuarios
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios/me").authenticated()
