@@ -16,6 +16,8 @@ public interface TransaccionService {
     
     List<TransaccionResponse> getTransaccionesByIdPublicacion(Long idPublicacion);
     
+    List<TransaccionResponse> getTransaccionesByUsuario(Long idUsuario);
+    
     TransaccionResponse crearTransaccion(Long idPublicacion, Long idComprador, 
                                          float monto, String metodoPago, 
                                          String referenciaPago, String comentarios);

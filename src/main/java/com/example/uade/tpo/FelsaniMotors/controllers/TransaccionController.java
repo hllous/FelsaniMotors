@@ -92,6 +92,19 @@ public class TransaccionController {
         }
     }
     
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<TransaccionResponse>> getTransaccionesByUsuario(
+            @PathVariable Long idUsuario) {
+        
+        List<TransaccionResponse> transacciones = transaccionService.getTransaccionesByUsuario(idUsuario);
+        
+        if (transacciones.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(transacciones);
+        }
+    }
+    
     // --- Seccion POST --- //
     
     @PostMapping

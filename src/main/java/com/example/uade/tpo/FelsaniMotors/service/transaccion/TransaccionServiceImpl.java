@@ -58,6 +58,18 @@ public class TransaccionServiceImpl implements TransaccionService {
     }
 
     @Override
+    public List<TransaccionResponse> getTransaccionesByUsuario(Long idUsuario) {
+        List<Transaccion> transacciones = transaccionRepository.findByUsuario(idUsuario);
+        List<TransaccionResponse> transaccionesResponse = new ArrayList<>();
+        
+        for (Transaccion transaccion : transacciones) {
+            transaccionesResponse.add(convertToTransaccionResponse(transaccion));
+        }
+        
+        return transaccionesResponse;
+    }
+
+    @Override
     public TransaccionResponse crearTransaccion(Long idPublicacion, Long idComprador, float monto, String metodoPago, String referenciaPago, String comentarios) {
         
         // Validar la publicacion

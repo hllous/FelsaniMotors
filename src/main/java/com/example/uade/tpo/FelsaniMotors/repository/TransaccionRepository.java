@@ -13,5 +13,8 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     
     @Query("SELECT t FROM Transaccion t WHERE t.publicacion.idPublicacion = :idPublicacion")
     List<Transaccion> findByIdPublicacion(@Param("idPublicacion") Long idPublicacion);
+    
+    @Query("SELECT t FROM Transaccion t WHERE t.comprador.idUsuario = :idUsuario OR t.vendedor.idUsuario = :idUsuario")
+    List<Transaccion> findByUsuario(@Param("idUsuario") Long idUsuario);
 
 }
