@@ -41,6 +41,9 @@ public interface PublicacionService {
         List<String> tipoCategorias,
         List<String> tipoCajas,
         List<String> motores,
+        List<Character> estadoPublicacion,
+        Float precioMin,
+        Float precioMax,
         Pageable pageable
     );
     

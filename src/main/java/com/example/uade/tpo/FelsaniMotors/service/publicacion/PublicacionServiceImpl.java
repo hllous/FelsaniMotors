@@ -261,6 +261,9 @@ public class PublicacionServiceImpl implements PublicacionService {
             List<String> tipoCategorias,
             List<String> tipoCajas,
             List<String> motores,
+            List<Character> estadoPublicacion,
+            Float precioMin,
+            Float precioMax,
             Pageable pageable) {
         
         // Calcular min/max de kilometrajes
@@ -287,7 +290,7 @@ public class PublicacionServiceImpl implements PublicacionService {
         Page<Publicacion> publicaciones = publicacionRepository.filtrar(
             busqueda, marcas, modelos, anios, estados,
             combustibles, tipoCategorias, tipoCajas, motores,
-            kmMin, kmMax, pageable
+            kmMin, kmMax, estadoPublicacion, precioMin, precioMax, pageable
         );
         
         // Convertir a DTO

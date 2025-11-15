@@ -38,7 +38,10 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
            "(:tipoCajas IS NULL OR p.auto.tipoCaja IN :tipoCajas) AND " +
            "(:motores IS NULL OR p.auto.motor IN :motores) AND " +
            "(:kmMin IS NULL OR p.auto.kilometraje >= :kmMin) AND " +
-           "(:kmMax IS NULL OR p.auto.kilometraje <= :kmMax) " +
+           "(:kmMax IS NULL OR p.auto.kilometraje <= :kmMax) AND " +
+           "(COALESCE(:estadoPublicacion, NULL) IS NULL OR p.estado IN :estadoPublicacion) AND " +
+           "(:precioMin IS NULL OR p.precio >= :precioMin) AND " +
+           "(:precioMax IS NULL OR p.precio <= :precioMax) " +
            "ORDER BY p.fechaPublicacion DESC")
     Page<Publicacion> filtrar(
         @Param("busqueda") String busqueda,
@@ -52,6 +55,9 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
         @Param("motores") List<String> motores,
         @Param("kmMin") Float kmMin,
         @Param("kmMax") Float kmMax,
+        @Param("estadoPublicacion") List<Character> estadoPublicacion,
+        @Param("precioMin") Float precioMin,
+        @Param("precioMax") Float precioMax,
         Pageable pageable
     );
     

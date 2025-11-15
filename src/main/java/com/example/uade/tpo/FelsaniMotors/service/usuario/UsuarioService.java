@@ -25,6 +25,9 @@ public interface UsuarioService {
     UsuarioResponse updateUsuario(Long idUsuario, UsuarioUpdateRequest request);
     UsuarioResponse cambiarContrasena(Long idUsuario, CambioContrasenaRequest request);
     
+    // Metodos PATCH
+    UsuarioResponse activarUsuario(Long idUsuario);
+    
     // Metodos DELETE
     void deleteUsuario(Long idUsuario);
     

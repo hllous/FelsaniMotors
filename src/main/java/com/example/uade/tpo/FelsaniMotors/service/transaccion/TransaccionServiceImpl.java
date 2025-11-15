@@ -93,9 +93,22 @@ public class TransaccionServiceImpl implements TransaccionService {
             throw new TransaccionInvalidaException("La publicación no está activa para realizar transacciones");
         }
         
-        // Validar que el monto sea igual al precio de la publicacion
-        if (Float.compare(monto, publicacion.getPrecio()) != 0) {
-            throw new TransaccionInvalidaException("El monto de la transacción (" + monto + ") debe ser igual al precio de la publicación (" + publicacion.getPrecio() + ")");
+        // Calcular precio con descuento
+        float precioOriginal = publicacion.getPrecio();
+        Integer descuentoPorcentaje = publicacion.getDescuentoPorcentaje();
+        float precioConDescuento = precioOriginal;
+        
+        if (descuentoPorcentaje != null && descuentoPorcentaje > 0) {
+            precioConDescuento = precioOriginal * (1 - descuentoPorcentaje / 100.0f);
+        }
+        
+        // Validar que el monto sea igual al precio con descuento aplicado
+        if (Float.compare(monto, precioConDescuento) != 0) {
+            if (descuentoPorcentaje != null && descuentoPorcentaje > 0) {
+                throw new TransaccionInvalidaException("El monto de la transacción (" + monto + ") debe ser igual al precio con descuento (" + precioConDescuento + "). Precio original: " + precioOriginal + ", Descuento: " + descuentoPorcentaje + "%");
+            } else {
+                throw new TransaccionInvalidaException("El monto de la transacción (" + monto + ") debe ser igual al precio de la publicación (" + precioOriginal + ")");
+            }
         }
         
         // Crear la transaccion
@@ -106,12 +119,16 @@ public class TransaccionServiceImpl implements TransaccionService {
         transaccion.setMonto(monto);
         transaccion.setMetodoPago(metodoPago);
         transaccion.setFechaTransaccion(new Date());
-        transaccion.setEstado("PENDIENTE");
+        transaccion.setEstado("COMPLETADA");
         transaccion.setReferenciaPago(referenciaPago);
         transaccion.setComentarios(comentarios);
         
         // Guardar la transaccion
         Transaccion savedTransaccion = transaccionRepository.save(transaccion);
+        
+        // Marcar la publicacion como vendida
+        publicacion.setEstado('V');
+        publicacionRepository.save(publicacion);
         
         // Convertir y devolver la respuesta
         return convertToTransaccionResponse(savedTransaccion);

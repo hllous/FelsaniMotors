@@ -114,19 +114,6 @@ public class PublicacionController {
         }
     }
     
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<PublicacionResponse>> getPublicacionesByEstado(
-            @RequestParam char estado) {
-
-        List<PublicacionResponse> publicaciones = publicacionService.getPublicacionesByEstado(estado);
-
-        if (publicaciones.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(publicaciones);
-        }
-    }
-    
     @GetMapping("/filtrar")
     public ResponseEntity<Page<PublicacionResponse>> filtrarPublicaciones(
             @RequestParam(required = false) String busqueda,
@@ -139,6 +126,9 @@ public class PublicacionController {
             @RequestParam(required = false) List<String> tipoCategoria,
             @RequestParam(required = false) List<String> tipoCaja,
             @RequestParam(required = false) List<String> motor,
+            @RequestParam(required = false) List<Character> estadoPublicacion,
+            @RequestParam(required = false) Float precioMin,
+            @RequestParam(required = false) Float precioMax,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 
@@ -151,8 +141,8 @@ public class PublicacionController {
         
         Page<PublicacionResponse> publicaciones = publicacionService.filtrarPublicaciones(
             busqueda, marca, modelo, anio, estado, kilometraje,
-            combustible, tipoCategoria, tipoCaja, motor,
-            pageable
+            combustible, tipoCategoria, tipoCaja, motor, estadoPublicacion,
+            precioMin, precioMax, pageable
         );
 
         if (publicaciones.isEmpty()) {

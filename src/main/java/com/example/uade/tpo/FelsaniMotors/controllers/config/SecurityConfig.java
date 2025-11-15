@@ -38,6 +38,9 @@ public class SecurityConfig {
                                 // Acceso a archivos html
                                 .requestMatchers("/", "/*.html", "/index.html", "/public/**", "/*.js", "/*.css").permitAll()
                                 
+                                // Catalogos - acceso publico para datos de formularios
+                                .requestMatchers(HttpMethod.GET, "/api/catalogos/**").permitAll()
+                                
                                 // Publicaciones - lectura publica, escritura autenticada
                                 .requestMatchers(HttpMethod.GET, "/api/publicaciones", "/api/publicaciones/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/publicaciones").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
@@ -55,6 +58,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // Registro publico
                                 .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
+                                .requestMatchers(HttpMethod.PATCH, "/api/usuarios/*/activar").hasAuthority(Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasAuthority(Role.ADMIN.name())
                                 
                                 // Comentarios - lectura publica, escritura autenticada
