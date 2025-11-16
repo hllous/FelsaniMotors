@@ -80,8 +80,18 @@ public class TransaccionServiceImpl implements TransaccionService {
         Usuario comprador = usuarioRepository.findById(idComprador)
                 .orElseThrow(() -> new TransaccionInvalidaException("Usuario comprador no encontrado con ID: " + idComprador));
         
+        // Validar que el comprador este activo
+        if (!comprador.getActivo()) {
+            throw new TransaccionInvalidaException("El usuario comprador no está activo");
+        }
+        
         // Validar el vendedor (obtenido de la publicacion)
         Usuario vendedor = publicacion.getUsuario();
+        
+        // Validar que el vendedor este activo
+        if (!vendedor.getActivo()) {
+            throw new TransaccionInvalidaException("El usuario vendedor no está activo");
+        }
         
         // Validar que el comprador no sea el vendedor
         if (comprador.getIdUsuario().equals(vendedor.getIdUsuario())) {

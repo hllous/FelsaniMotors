@@ -82,7 +82,7 @@ public class AuthenticationService {
         
         private Usuario getCurrentUser(Authentication authentication) {
                 if (authentication == null) {
-                        throw new IllegalArgumentException("No hay autenticación disponible");
+                        throw new IllegalArgumentException("No hay autenticacion");
                 }
                 
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
