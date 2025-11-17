@@ -15,7 +15,9 @@ import com.example.uade.tpo.FelsaniMotors.service.comentario.ComentarioService;
      Endpoints ADMIN para comentarios
 
      GET:
-         - listarTodosLosComentarios: Lista todos los comentarios del sistema (ADMIN only)
+         - listarTodosLosComentarios: Lista todos los comentarios del sistema (ADMIN only). Sirve para traer todos los comentarios a front mas facil
+         esto es porque no se pueden obtener todos los comentarios de una, ya que cada comentario esta asociado a una publicacion si o si. Con esto
+         no necesitamos darle una publicacion para hacer el get de comentarios, y hacer muchos GETs de front, asi saturando al server
 */
 
 @RestController

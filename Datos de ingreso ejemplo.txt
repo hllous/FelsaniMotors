@@ -163,6 +163,10 @@ get http://localhost:4002/api/usuarios/{idUsuario}
   "email": "fernando.diaz@outlook.com",
   "password": "FerDiaz2025!"
 }
+{
+  "email": "francisco.lopez@gmail.com",
+  "password":"flopez"
+}
 
 
 // ---------------------------------//
