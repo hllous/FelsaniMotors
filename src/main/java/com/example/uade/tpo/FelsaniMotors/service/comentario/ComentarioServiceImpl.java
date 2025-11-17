@@ -177,6 +177,14 @@ public class ComentarioServiceImpl implements ComentarioService {
         // Eliminar respuestas recursivamente (se eliminan en cascada por la configuración de la entidad)
         comentarioRepository.delete(comentarioAEliminar);
     }
+
+    @Override
+    public List<ComentarioResponse> listarTodosLosComentarios() {
+        List<Comentario> comentarios = comentarioRepository.findAllComentariosOrderByFechaDesc();
+        return comentarios.stream()
+                .map(this::convertToDtoSinRespuestas)
+                .collect(Collectors.toList());
+    }
     
     // Método privado para convertir Comentario a ComentarioResponse
     private ComentarioResponse convertToDto(Comentario comentario) {
@@ -224,6 +232,51 @@ public class ComentarioServiceImpl implements ComentarioService {
                     .collect(Collectors.toList());
             response.setRespuestas(respuestasDto);
         }
+        
+        return response;
+    }
+
+    // Método privado para convertir Comentario a ComentarioResponse sin respuestas anidadas
+    private ComentarioResponse convertToDtoSinRespuestas(Comentario comentario) {
+        if (comentario == null) return null;
+        
+        ComentarioResponse response = new ComentarioResponse();
+        response.setIdComentario(comentario.getIdComentario());
+        response.setTexto(comentario.getTexto());
+        response.setFecha(comentario.getFecha());
+        
+        // Convertir usuario
+        if (comentario.getUsuario() != null) {
+            UsuarioResponseComentario usuarioDto = new UsuarioResponseComentario();
+            usuarioDto.setIdUsuario(comentario.getUsuario().getIdUsuario());
+            usuarioDto.setEmail(comentario.getUsuario().getEmail());
+            usuarioDto.setNombre(comentario.getUsuario().getNombre());
+            usuarioDto.setApellido(comentario.getUsuario().getApellido());
+            usuarioDto.setTelefono(comentario.getUsuario().getTelefono());
+            usuarioDto.setRol(comentario.getUsuario().getRol().name());
+            response.setUsuario(usuarioDto);
+        }
+        
+        // Convertir publicación
+        if (comentario.getPublicacion() != null) {
+            PublicacionResponseComentario publicacionDto = new PublicacionResponseComentario();
+            publicacionDto.setIdPublicacion(comentario.getPublicacion().getIdPublicacion());
+            publicacionDto.setTitulo(comentario.getPublicacion().getTitulo());
+            publicacionDto.setDescripcion(comentario.getPublicacion().getDescripcion());
+            publicacionDto.setUbicacion(comentario.getPublicacion().getUbicacion());
+            publicacionDto.setPrecio(comentario.getPublicacion().getPrecio());
+            publicacionDto.setFechaPublicacion(comentario.getPublicacion().getFechaPublicacion());
+            publicacionDto.setEstado(comentario.getPublicacion().getEstado());
+            response.setPublicacion(publicacionDto);
+        }
+        
+        // Agregar ID del comentario padre si existe
+        if (comentario.getPadre() != null) {
+            response.setIdComentarioPadre(comentario.getPadre().getIdComentario());
+        }
+        
+        // NO incluir respuestas anidadas para el endpoint de admin
+        response.setRespuestas(null);
         
         return response;
     }

@@ -31,4 +31,8 @@ public interface ComentarioService {
     //Elimina un comentario y todas sus respuestas
     //Solo puede eliminar el creador del comentario o un ADMIN
     void eliminarComentario(Long idComentario, Long idUsuarioActual);
+
+    //Lista todos los comentarios del sistema (para ADMIN)
+    //Devuelve array plano ordenado por fecha DESC
+    List<ComentarioResponse> listarTodosLosComentarios();
 }

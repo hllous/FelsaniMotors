@@ -80,6 +80,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/transacciones/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/api/transacciones/**").hasAnyAuthority(Role.USER.name(), Role.ADMIN.name())
                                 
+                                // Comentarios Admin - solo ADMIN
+                                .requestMatchers(HttpMethod.GET, "/api/comentarios/admin/**").hasAuthority(Role.ADMIN.name())
+                                
                                 // Cualquier otro endpoint requiere autenticacion
                                 .anyRequest().authenticated())
                         .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

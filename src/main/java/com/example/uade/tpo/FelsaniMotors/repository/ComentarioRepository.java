@@ -26,4 +26,8 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
            "c.fecha ASC")
     List<Comentario> findAllComentariosByPublicacionOrdenados(@Param("idPublicacion") Long idPublicacion);
 
+    // Devuelve todos los comentarios del sistema ordenados por fecha DESC
+    @Query("SELECT c FROM Comentario c ORDER BY c.fecha DESC")
+    List<Comentario> findAllComentariosOrderByFechaDesc();
+
 }
