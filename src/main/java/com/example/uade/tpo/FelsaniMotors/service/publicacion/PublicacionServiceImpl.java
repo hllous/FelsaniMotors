@@ -237,8 +237,12 @@ public class PublicacionServiceImpl implements PublicacionService {
             transaccionRepository.deleteAll(transacciones);
         }
         
-        // 2. Guardar referencia al auto para eliminarlo después
+        // 2. Desvincular el auto ANTES de eliminar la publicación
         Auto auto = publicacion.getAuto();
+        if (auto != null) {
+            auto.setPublicacion(null);
+            autoRepository.save(auto);  // Guardar el cambio en el auto primero
+        }
         
         // 3. Eliminar la publicación (fotos y comentarios se eliminan automáticamente por cascade)
         publicacionRepository.delete(publicacion);
